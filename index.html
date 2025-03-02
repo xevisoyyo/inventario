@@ -3,9 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Inventario</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="img/favicons/favicon.ico">
+    <script type="module" src="index.js"></script>
 </head>
 <body>
-    <h1>¡Hola Mundo!</h1>
+    <canvas class="lines-container" id="lines-container"></canvas>
+    <div id="inventory" class="inventory">
+        <div class="inventory-top">
+            <div class="container bag">
+                <h3 class="title">Mochila</h3>
+                <div class="grid" data-type="bag" id="grid-bag"></div>
+            </div>
+            <div class="container resources" data-type="resources">
+                <h3 class="title">Recursos</h3>
+                <div class="grid" id="grid-resources"></div>
+            </div>
+        </div>
+        <div class="container consumables" data-type="consumables">
+            <h3 class="title">Consumibles</h3>
+            <div class="grid" id="grid-consumables"></div>
+        </div>
+    </div>
 </body>
 </html>

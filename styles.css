@@ -1,0 +1,131 @@
+body{
+	background-color: rgb(100, 100, 100);
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+body[data-active-grid] .container.bag .grid{
+	transition: all .3s ease;
+}
+body[data-active-grid="bag"] .container.bag .grid{
+	background-color: rgba(150, 180, 150, 0.7);
+}
+body[data-active-grid="resources"] .container.resources .grid{
+	background-color: rgba(150, 150, 180, 0.7);
+}
+body[data-active-grid="consumables"] .container.consumables .grid{
+	background-color: rgba(180, 150, 150, 0.7);
+}
+
+.inventory{
+	background-color: rgb(120 120,120);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+	margin-top: 20px;
+	padding: 20px;
+	border-radius: 15px;
+}
+div{
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.inventory-top {
+  display: flex;
+  gap: 20px;
+	box-shadow: none;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+.title {
+  font-size: 18px;
+  color: white;
+  margin: 0px;
+	padding: 10px 6px 6px 6px;
+	user-select: none;
+}
+.grid {
+  display: grid;
+  border: 1px solid white;
+  background-color: rgb(150,150,150);
+}
+.container.bag .grid {
+  grid-template-columns: repeat(4, 50px);
+  grid-template-rows: repeat(4, 50px);
+}
+.container.resources .grid {
+  grid-template-columns: repeat(2, 50px);
+  grid-template-rows: repeat(4, 50px);
+}
+.container.consumables .grid {
+  grid-template-columns: repeat(4, 50px);
+  grid-template-rows: repeat(1, 50px);
+}
+.cell {
+  width: 50px;
+  height: 50px;
+  box-sizing: border-box;
+  border: 1px solid white;
+}
+/* Estilos para los ítems */
+.item {
+  position: absolute;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border: 1px solid white;
+  box-sizing: border-box;
+  user-select: none;
+  cursor: grab;
+}
+.item.grabbing{ cursor: grabbing; z-index: 3; }
+
+.item[data-type="bag"],
+.container.bag{
+	box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.3);
+	background-color: rgba(150, 250, 150, 0.7);
+}
+.item[data-type="resources"],
+.container.resources{
+	box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.3);
+	background-color: rgba(150, 150, 250, 0.7);
+}
+.item[data-type="consumables"],
+.container.consumables{
+	box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.3);
+	background-color: rgba(250, 150, 150, 0.7);
+}
+.item-1x1 {
+  width: 50px;
+  height: 50px;
+}
+.item-2x1 {
+  width: 100px;
+  height: 50px;
+}
+.item-2x2 {
+  width: 100px;
+  height: 100px;
+}
+
+.lines-container{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+.lines-container .line.red{
+  
+}
