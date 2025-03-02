@@ -1,38 +1,32 @@
+console.log = function(...args) {};
+
 const items = [];
-const bag = [
-  { id: 1, empty: true },
-  { id: 2, empty: true },
-  { id: 3, empty: true },
-  { id: 4, empty: true },
-  { id: 5, empty: true },
-  { id: 6, empty: true },
-  { id: 7, empty: true },
-  { id: 8, empty: true },
-  { id: 9, empty: true },
-  { id: 10, empty: true },
-  { id: 11, empty: true },
-  { id: 12, empty: true },
-  { id: 13, empty: true },
-  { id: 14, empty: true },
-  { id: 15, empty: true },
-  { id: 16, empty: true },
-];
-const res = [
-  { id: 1, empty: true },
-  { id: 2, empty: true },
-  { id: 3, empty: true },
-  { id: 4, empty: true },
-  { id: 5, empty: true },
-  { id: 6, empty: true },
-  { id: 7, empty: true },
-  { id: 8, empty: true },
-];
-const con = [
-  { id: 1, empty: true },
-  { id: 2, empty: true },
-  { id: 3, empty: true },
-  { id: 4, empty: true },
-];
+let selectedItem = {};
+
+const bag = {
+	cols: 4,
+	rows: 4,
+	cells: [{empty: true}, {empty: true}, {empty: true}, {empty: true},
+		{empty: true}, {empty: true}, {empty: true}, {empty: true},
+		{empty: true}, {empty: true}, {empty: true}, {empty: true},
+		{empty: true}, {empty: true}, {empty: true}, {empty: true},
+	],
+};
+
+const res = {
+	cols: 2,
+	rows: 4,
+	cells: [{empty: true}, {empty: true},
+		{empty: true}, {empty: true},
+		{empty: true}, {empty: true},
+		{empty: true}, {empty: true},
+	],
+}
+const con = {
+	cols: 4,
+	rows: 1,
+	cells: [{empty: true}, {empty: true}, {empty: true}, {empty: true}],
+}
 const points = [];
 
 const canvas = document.getElementById('lines-container');
@@ -40,9 +34,9 @@ const ctx = canvas.getContext('2d');
 const body = document.body;
   canvas.width = document.documentElement.clientWidth;
   canvas.height = document.documentElement.clientHeight;
-window.addEventListener('resize', ()=>{
-  canvas.width = document.documentElement.clientWidth;
-  canvas.height = document.documentElement.clientHeight;
+  window.addEventListener('resize', ()=>{
+	canvas.width = document.documentElement.clientWidth;
+	canvas.height = document.documentElement.clientHeight;
 });
 
 
@@ -50,81 +44,89 @@ let mouseOffset = {x: 0, y: 0};
 const squareSize = 50;
 const squareHalf = 25;
 
-createGrid("grid-bag", 16);
-createGrid("grid-resources", 8);
-createGrid("grid-consumables", 4);
+const zoomLevel = window.devicePixelRatio; // !important: prueba
 
-addItem({name: "A",					width: 1, height: 1, x: 20, y: 10, type: "bag"});
-addItem({name: "B", 				width: 1, height: 1, x: 40, y: 10, type: "bag"});
-addItem({name: "C", 				width: 1, height: 1, x: 60, y: 10, type: "bag"});
-addItem({name: "Palo", 			width: 2, height: 1, x: 40, y: 70, type: "bag"});
-addItem({name: "Casco", 		width: 2, height: 2, x: 60, y: 150, type: "bag"});
-addItem({name: "D", 				width: 1, height: 1, x: 10, y: 90, type: "resources"});
-addItem({name: "E", 				width: 1, height: 1, x: 10, y: 120, type: "resources"});
-addItem({name: "G",				 	width: 1, height: 1, x: 10, y: 140, type: "resources"});
-addItem({name: "Recurso", 	width: 2, height: 1, x: 70, y: 70, type: "resources"});
-addItem({name: "H", 				width: 1, height: 1, x: 40, y: 180, type: "consumables"});
-addItem({name: "Manzanas", 	width: 2, height: 1, x: 70, y: 150, type: "consumables"});
+createGridsAndItems();
+
+function createGridsAndItems(){
+	createGrid("grid-bag", 16);
+	createGrid("grid-resources", 8);
+	createGrid("grid-consumables", 4);
+
+	createItem({name: "A",			width: 1, height: 1, x: 20, y: 10, 	type: "bag"});
+	createItem({name: "B", 			width: 1, height: 1, x: 40, y: 10, 	type: "bag"});
+	createItem({name: "C", 			width: 1, height: 1, x: 60, y: 10, 	type: "bag"});
+	createItem({name: "Palo", 		width: 2, height: 1, x: 40, y: 70, 	type: "bag"});
+	createItem({name: "Casco", 		width: 2, height: 2, x: 60, y: 150, type: "bag"});
+	createItem({name: "D", 			width: 1, height: 1, x: 10, y: 90, 	type: "resources"});
+	createItem({name: "E", 			width: 1, height: 1, x: 10, y: 120, type: "resources"});
+	createItem({name: "G",			width: 1, height: 1, x: 10, y: 140, type: "resources"});
+	createItem({name: "Recurso", 	width: 2, height: 1, x: 70, y: 70, 	type: "resources"});
+	createItem({name: "H", 			width: 1, height: 1, x: 40, y: 180, type: "consumables"});
+	createItem({name: "Manzanas", 	width: 2, height: 1, x: 70, y: 150, type: "consumables"});
+}
 
 function createGrid(containerId, cellCount) {
-  const grid = document.getElementById(containerId);
+  const gridElement = document.getElementById(containerId);
   for (let i = 0; i < cellCount; i++) {
-    const cell = document.createElement("div");
-    cell.classList.add("cell");
-		cell.setAttribute("data-id", i + 1);
-    grid.appendChild(cell);
+    const cellElement = document.createElement("div");
+    cellElement.classList.add("cell");
+	cellElement.setAttribute("data-id", i + 1);
+    gridElement.appendChild(cellElement);
   }
 }
 
-function addItem({name, width, height, x, y, type}) {
-  const item = {
+function createItem({name, width, height, type, x, y}) {
+	// crea el item (objeto)
+	const item = {
 		id: items.length,
-    name,
-    width,
-    height,
-    type
-  };
-  items.push(item);
-  createItemElement(item, {x, y});
-}
+		name,
+		width,
+		height,
+		type,
+		element: document.createElement("div"),
+		rect: null,
+		x,
+		y,
+	};
+	// crea el item (elemento) ^
+	item.element.classList.add("item", `item-${item.width}x${item.height}`);
+	item.element.textContent = item.name;
+	item.element.style.left = `${x}px`;
+	item.element.style.top = `${y}px`;
+	item.element.setAttribute("data-type", item.type);
+	item.element.setAttribute("data-itemid", item.id);
+	item.element.addEventListener("mousedown", onItemGrab);
 
-function createItemElement(item, {x, y}) {
-  const itemElement = document.createElement("div");
-  itemElement.classList.add("item", `item-${item.width}x${item.height}`);
-  itemElement.textContent = item.name;
-  itemElement.style.left = `${x}px`;
-  itemElement.style.top = `${y}px`;
-  itemElement.setAttribute("data-type", item.type);
-	itemElement.setAttribute("data-itemid", item.id);
-  itemElement.addEventListener("mousedown", onItemGrab);
-  document.body.appendChild(itemElement);
+	// agrega el item al array de items y el item.element al body
+	items.push(item);
+	document.body.appendChild(item.element);
 }
 
 function onItemGrab(event) {
-	const itemElement = event.target;
-	setFreePoints(itemElement);
-	const itemRect = itemElement.getBoundingClientRect();
-	mouseOffset.x = event.clientX - itemRect.left;
- 	mouseOffset.y = event.clientY - itemRect.top;
+	selectedItem.element = event.target;
+	setFreePoints(selectedItem.element);
+	selectedItem.rect = selectedItem.element.getBoundingClientRect();
 
-  itemElement.classList.add("grabbing");
-  itemElement.addEventListener("mousemove", onItemMove);
-  itemElement.addEventListener("mouseup", onItemDrop);
+	mouseOffset.x = event.pageX - selectedItem.rect.left;
+ 	mouseOffset.y = event.pageY - selectedItem.rect.top;
+
+	selectedItem.element.classList.add("grabbing");
+	document.addEventListener("mousemove", onItemMove);
+	selectedItem.element.addEventListener("mouseup", onItemDrop);
 }
 
 function onItemMove(event) {
-	const itemElement = event.target;
-	let x = event.clientX - mouseOffset.x;
-	let y = event.clientY - mouseOffset.y;
-  itemElement.style.left = x + "px";
-  itemElement.style.top = y + "px";
+	selectedItem.x = event.clientX - mouseOffset.x;
+	selectedItem.y = event.clientY - mouseOffset.y;
+	selectedItem.element.style.left = selectedItem.x + "px";
+	selectedItem.element.style.top = selectedItem.y + "px";
 	
-	const itemRect = itemElement.getBoundingClientRect();
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	
 	for(let i = 0; i < points.length; i++){
 		ctx.beginPath();
-		ctx.moveTo(x + itemRect.width / 2, y + itemRect.height / 2);
+		ctx.moveTo(selectedItem.x + selectedItem.rect.width / 2, selectedItem.y + selectedItem.rect.height / 2);
 		ctx.lineTo(points[i].x, points[i].y);
 		ctx.strokeStyle = "#ff0000";
 		ctx.lineWidth = 0.4;
@@ -132,29 +134,38 @@ function onItemMove(event) {
 	}
 }
 
-function onItemDrop(event) {
+function getGrid(type){
+	switch(type){
+		case "bag":
+			return bag;
+		case "resources":
+			return res;
+		case "consumables":
+			return con;
+	}
+}
 
-	console.log("Cell ID: " + event.target.getAttribute("data-id"));
-	console.log("Cell ID: " + event.target.dataset.id);
+function onItemDrop(event) {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	const itemElement = event.target;
 	itemElement.classList.remove("grabbing");
-	itemElement.removeEventListener("mousemove", onItemMove);
+	document.removeEventListener("mousemove", onItemMove);
 	itemElement.removeEventListener("mouseup", onItemDrop);
 
 	const itemId = itemElement.getAttribute("data-itemid");
 	const item = items[itemId];
 	
-	const grid = getActiveGrid();
-	const activeGridRect = grid.getBoundingClientRect();
+	const gridElement = document.querySelector(`#grid-${item.type}`);
+	const gridRect = gridElement.getBoundingClientRect();
 	const itemRect = itemElement.getBoundingClientRect();
+	const grid = getGrid(item.type);
 
 	if (
-    activeGridRect.right < itemRect.left ||
-    activeGridRect.left > itemRect.right ||
-    activeGridRect.bottom < itemRect.top ||
-    activeGridRect.top > itemRect.bottom
-  ){
+		gridRect.right < itemRect.left ||
+		gridRect.left > itemRect.right ||
+		gridRect.bottom < itemRect.top ||
+		gridRect.top > itemRect.bottom
+  	){
 		const inventoryRect = document.getElementById("inventory").getBoundingClientRect();
 		if(inventoryRect.right > itemRect.left &&
 			inventoryRect.left + 210 < itemRect.right) itemElement.style.left = `${inventoryRect.right + 10}px`;
@@ -179,12 +190,14 @@ function onItemDrop(event) {
 		itemElement.style.top = `${shorterPoint.y}px`;
 
 		if(item.width === 1){
-			let indexX = (shorterPoint.x - activeGridRect.x - 1) / 50 + 1;
-			let indexY = (shorterPoint.y - activeGridRect.y - 1) / 50 + 1;
-			let index = (indexY - 1) * 4 + (indexX - 1);
+			let indexX = (shorterPoint.x - gridRect.x - 1) / 50 + 1;
+			let indexY = (shorterPoint.y - gridRect.y - 1) / 50 + 1;
+			let index = (indexY - 1) * grid.cols + (indexX - 1);
 			console.log(indexX + ", " + indexY + " = " + index);
-			console.log(grid)
-			grid[index].empty = false;
+			grid.cells[index].empty = false;
+			for(let i = 0; i < grid.cells.length; i++){
+				console.log(grid.cells[i]);
+			}
 		}
 		else if(item.width === 2 && item.height === 1){
 
@@ -193,68 +206,44 @@ function onItemDrop(event) {
 
 		}
 	}
-
-  points.length = 0;
-	removeActiveGrid();
 }
 
-function setActiveGrid(type){
-    document.body.setAttribute("data-active-grid", type);		
-}
+function setFreePoints(itemElement){
+	points.length = 0;
 
-function getActiveGrid(){
-	let gridName = "grid-" + document.body.getAttribute("data-active-grid");
-	return document.getElementById(gridName);
-}
-
-function removeActiveGrid(){
-    document.body.removeAttribute("data-active-grid");
-}
-
-function setFreePoints(el){
-	const itemId = el.dataset.itemid;
-	const itemType = el.dataset.type;
-  setActiveGrid(itemType);
+	const itemId = itemElement.dataset.itemid;
+	const itemType = itemElement.dataset.type;
 	let item = items[parseInt(itemId,10)];
 	const gridRect = document.getElementById(`grid-${item.type}`).getBoundingClientRect();
-	let gridArray;
-	let cols;
-	switch (itemType){
-		case "bag":
-			cols = 4;
-			gridArray = bag;
-		break;
-		case "resources":
-			cols = 2;
-			gridArray = res;
-		break;
-		case "consumables":		
-			cols = 4;
-			gridArray = con;
-	}
+
+	let grid = getGrid(itemType);
+
+	let cols = grid.cols;
+
 	if(item.width === 1){
-		for(let i = 0; i < gridArray.length; i++){
-			if(gridArray[i].empty){
-				console.log(gridArray[i].id + " is valid to place an item of 1x1");
+		for(let i = 0; i < grid.cells.length; i++){
+			if(grid.cells[i].empty){
+				console.log("Cell " + (i + 1) + " is valid to place an item of 1x1");
 				const point = {x: gridRect.x + (cols - (i%cols) - 1 ) * squareSize + squareHalf, y: gridRect.y + Math.floor(i/cols) * squareSize + squareHalf};
 				points.push(point);
 			}
-			else console.log(gridArray[i].id + " is NOT valid to place an item of 1x1");
+			else console.log("Cell " + (i + 1) + " is NOT valid to place an item of 1x1");
 		}
 	}
 	else if(item.width === 2 && item.height === 1){
-		for(let i = 0; i < gridArray.length; i++){
-			if((i+1) % cols !== 0 && gridArray[i].empty && gridArray[i+1].empty){
-				console.log(gridArray[i].id + " is valid to place an item of 2x1");
+		for(let i = 0; i < grid.cells.length; i++){
+			if((i+1) % cols !== 0 && grid.cells[i].empty && grid.cells[i+1].empty){
+				console.log("Cell " + (i + 1) + " is valid to place an item of 2x1");
 				const point = {x: gridRect.x + (cols - (i%cols) - 1 ) * squareSize, y: gridRect.y + Math.floor(i/cols) * squareSize + squareHalf};
 				points.push(point);
 			}
 		}
 	}
 	else if(item.width === 2 && item.height === 2){
-		for(let i = 0; i < (gridArray.length - 4); i++){
-			if((i+1) % 4 !== 0 && gridArray[i].empty && gridArray[i+1].empty && gridArray[i+4].empty && gridArray[i+5].empty){
-				console.log(gridArray[i].id + " is valid to place an item of 2x2");
+		let cellsArrayLength = grid.cells.length - 4;
+		for(let i = 0; i < cellsArrayLength; i++){
+			if((i+1) % 4 !== 0 && grid.cells[i].empty && grid.cells[i+1].empty && grid.cells[i+4].empty && grid.cells[i+5].empty){
+				console.log("Cell " + (i + 1) + " is valid to place an item of 2x2");
 				const point = {x: gridRect.x + (cols - (i%cols) - 1 ) * squareSize, y: gridRect.y + Math.floor(i/cols) * squareSize + squareSize};
 				points.push(point);
 			}

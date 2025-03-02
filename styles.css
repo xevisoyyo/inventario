@@ -1,9 +1,10 @@
 body{
-	background-color: rgb(100, 100, 100);
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
+	background-color: rgb(100, 100, 100);
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 body[data-active-grid] .container.bag .grid{
 	transition: all .3s ease;
@@ -126,6 +127,6 @@ div{
   z-index: 2;
   pointer-events: none;
 }
-.lines-container .line.red{
+/* .lines-container .line.red{
   
-}
+} */
