@@ -214,8 +214,9 @@ function onItemDrop() {
 	
 	const gridRect = selectedGrid.rect;
 	const itemRect = selectedItem.rect;
+	const margin = 10;
 
-	// fuera del grid
+	// fuera del grid actual
 	if (
 		gridRect.right < itemRect.left ||
 		gridRect.left > itemRect.right ||
@@ -223,13 +224,47 @@ function onItemDrop() {
 		gridRect.top > itemRect.bottom
   	){
 		const inventoryRect = document.getElementById("inventory").getBoundingClientRect();
-		if(inventoryRect.right > itemRect.left &&
-			inventoryRect.left + 210 < itemRect.right) selectedItem.element.style.left = `${inventoryRect.right + 10}px`;
-		else if(inventoryRect.left < itemRect.right &&
-			inventoryRect.right - 210 > itemRect.left) selectedItem.element.style.left = `${inventoryRect.left - 10 - selectedItem.width * squareSize}px`;
+
+		// límites de inventoryRect con el margen
+		const marginInventoryRect = {
+			left: inventoryRect.left - margin,
+			top: inventoryRect.top - margin,
+			right: inventoryRect.right + margin,
+			bottom: inventoryRect.bottom + margin,
+		};
 	
+		// comprueba si itemRect está dentro de inventoryRect con margen
+		if (
+			itemRect.left < marginInventoryRect.right &&
+			itemRect.right > marginInventoryRect.left &&
+			itemRect.top < marginInventoryRect.bottom &&
+			itemRect.bottom > marginInventoryRect.top
+		) {
+			// como hay colision, calcula los centros de los rectángulos
+			const itemCenterX = itemRect.left + itemRect.width / 2;
+			const itemCenterY = itemRect.top + itemRect.height / 2;
+			const inventoryCenterX = inventoryRect.left + inventoryRect.width / 2;
+			const inventoryCenterY = inventoryRect.top + inventoryRect.height / 2;
+	
+			// y determina la dirección de la colisión basada en los centros
+			if (Math.abs(itemCenterX - inventoryCenterX) > Math.abs(itemCenterY - inventoryCenterY)) {
+				// colisión horizontal
+				if (itemCenterX > inventoryCenterX) { // mueve a la derecha
+					selectedItem.element.style.left = `${marginInventoryRect.right}px`;
+				} else {// mueve a la izquierda
+					selectedItem.element.style.left = `${marginInventoryRect.left - itemRect.width}px`;
+				}
+			} else {
+				// colisión vertical
+				if (itemCenterY > inventoryCenterY) { // mueve hacia abajo
+					selectedItem.element.style.top = `${marginInventoryRect.bottom}px`;
+				} else { // mueve hacia arriba
+					selectedItem.element.style.top = `${marginInventoryRect.top - itemRect.height}px`;
+				}
+			}
+		}
 	}
-	// dentro del grid
+	// dentro del grid actual
 	else{
 		let shorterPoint= {x: 0, y: 0};
 		let shorterDistance = 5000;
@@ -244,10 +279,18 @@ function onItemDrop() {
 				}
 			}
 		}
-
+		// si hay distancia es porque hay como minímo un espacio para ese item
 		if(distance){
 			selectedItem.element.style.left = `${shorterPoint.x}px`;
 			selectedItem.element.style.top = `${shorterPoint.y}px`;
+		}
+		// si no hay distancia es porque no hay ningún espacio para ese item (se devuelve al origen)
+		else {
+			const inventoryRect = document.getElementById("inventory").getBoundingClientRect();
+			console.log(selectedItem.rect)
+			console.log(inventoryRect)
+			if((selectedItem.rect.left + selectedItem.rect.width/2) > (inventoryRect.left + inventoryRect.width/2)) selectedItem.element.style.left = `${inventoryRect.right + margin}px`;
+			else selectedItem.element.style.left = `${inventoryRect.left - selectedItem.rect.width - margin}px`;
 		}
 	}
 	removeActiveGrid();

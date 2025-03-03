@@ -148,7 +148,7 @@ div{
   align-items: center;
   justify-content: center;
   background-color: rgba(120 120,120,.7);
-  border-radius: 10px;
+  border-radius: 20px;
 }
 .menu .button{
   min-width: 140px;
@@ -173,11 +173,11 @@ div{
 
 .menu .switch-rays{
   color: rgb(187, 141, 141);
-  background-color: rgb(116, 48, 48);
+  background-color: rgb(110, 57, 57);
   border-color: rgb(46, 16, 16);
 }
 .menu .switch-rays:hover{
-  background-color: rgb(187, 61, 61);
+  background-color: rgb(146, 58, 58);
   border-color: rgb(78, 14, 14);
 }
 
