@@ -6,8 +6,8 @@ body{
 	background-color: rgb(100, 100, 100);
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
-body[data-active-grid] .container.bag .grid{
-	transition: all .3s ease;
+body[data-active-grid] .container .grid{
+	transition: all 1.3s ease;
 }
 body[data-active-grid="bag"] .container.bag .grid{
 	background-color: rgba(150, 180, 150, 0.7);

@@ -1,31 +1,27 @@
-console.log = function(...args) {};
+// console.log = function(...args) {};
 
-const items = [];
 let selectedItem = {};
+const items = [];
 
+let selectedGrid = {};
 const bag = {
 	cols: 4,
 	rows: 4,
-	cells: [{empty: true}, {empty: true}, {empty: true}, {empty: true},
-		{empty: true}, {empty: true}, {empty: true}, {empty: true},
-		{empty: true}, {empty: true}, {empty: true}, {empty: true},
-		{empty: true}, {empty: true}, {empty: true}, {empty: true},
-	],
+	element: null,
+	rect: null,
 };
 
 const res = {
 	cols: 2,
 	rows: 4,
-	cells: [{empty: true}, {empty: true},
-		{empty: true}, {empty: true},
-		{empty: true}, {empty: true},
-		{empty: true}, {empty: true},
-	],
+	element: null,
+	rect: null,
 }
 const con = {
 	cols: 4,
 	rows: 1,
-	cells: [{empty: true}, {empty: true}, {empty: true}, {empty: true}],
+	element: null,
+	rect: null,
 }
 const points = [];
 
@@ -44,14 +40,12 @@ let mouseOffset = {x: 0, y: 0};
 const squareSize = 50;
 const squareHalf = 25;
 
-const zoomLevel = window.devicePixelRatio; // !important: prueba
-
 createGridsAndItems();
 
 function createGridsAndItems(){
-	createGrid("grid-bag", 16);
-	createGrid("grid-resources", 8);
-	createGrid("grid-consumables", 4);
+	createGrid("bag", 16);
+	createGrid("resources", 8);
+	createGrid("consumables", 4);
 
 	createItem({name: "A",			width: 1, height: 1, x: 20, y: 10, 	type: "bag"});
 	createItem({name: "B", 			width: 1, height: 1, x: 40, y: 10, 	type: "bag"});
@@ -66,14 +60,16 @@ function createGridsAndItems(){
 	createItem({name: "Manzanas", 	width: 2, height: 1, x: 70, y: 150, type: "consumables"});
 }
 
-function createGrid(containerId, cellCount) {
-  const gridElement = document.getElementById(containerId);
-  for (let i = 0; i < cellCount; i++) {
-    const cellElement = document.createElement("div");
-    cellElement.classList.add("cell");
-	cellElement.setAttribute("data-id", i + 1);
-    gridElement.appendChild(cellElement);
-  }
+function createGrid(type, nomberOfCells) {
+	let grid = getGrid(type);
+	grid.element = document.getElementById(`grid-${type}`);
+	
+	for (let i = 0; i < nomberOfCells; i++) {
+		const cellElement = document.createElement("div");
+		cellElement.classList.add("cell");
+		cellElement.setAttribute("data-id", i + 1);
+		grid.element.appendChild(cellElement);
+	}
 }
 
 function createItem({name, width, height, type, x, y}) {
@@ -104,16 +100,55 @@ function createItem({name, width, height, type, x, y}) {
 }
 
 function onItemGrab(event) {
-	selectedItem.element = event.target;
-	setFreePoints(selectedItem.element);
+	selectedItem = items[parseInt(event.target.dataset.itemid,10)];
 	selectedItem.rect = selectedItem.element.getBoundingClientRect();
+
+	selectedGrid = getGrid(selectedItem.type);
+	selectedGrid.rect = selectedGrid.element.getBoundingClientRect();
+
+	setFreePoints();
 
 	mouseOffset.x = event.pageX - selectedItem.rect.left;
  	mouseOffset.y = event.pageY - selectedItem.rect.top;
 
+	setActiveGrid(selectedItem.type);
 	selectedItem.element.classList.add("grabbing");
 	document.addEventListener("mousemove", onItemMove);
 	selectedItem.element.addEventListener("mouseup", onItemDrop);
+}
+
+function setFreePoints(){
+	points.length = 0;
+
+	const gridRectX = selectedGrid.rect.x;
+	const gridRectY = selectedGrid.rect.y;
+
+	let gridCells = selectedGrid.cols * selectedGrid.rows;
+	let gridCols = selectedGrid.cols;
+
+	if(selectedItem.width === 1){
+		for(let i = 0; i < gridCells; i++){
+			const point = {x: gridRectX + (gridCols - (i%gridCols) - 1 ) * squareSize + squareHalf, y: gridRectY + Math.floor(i/gridCols) * squareSize + squareHalf};
+			points.push(point);
+		}
+	}
+	else if(selectedItem.width === 2 && selectedItem.height === 1){
+		for(let i = 0; i < gridCells; i++){
+			if((i+1) % gridCols !== 0){
+				const point = {x: gridRectX + (gridCols - (i%gridCols) - 1 ) * squareSize, y: gridRectY + Math.floor(i/gridCols) * squareSize + squareHalf};
+				points.push(point);
+			}
+		}
+	}
+	else if(selectedItem.width === 2 && selectedItem.height === 2){
+		let cellsArrayLength = gridCells - 4;
+		for(let i = 0; i < cellsArrayLength; i++){
+			if((i+1) % 4 !== 0){
+				const point = {x: gridRectX + (gridCols - (i%gridCols) - 1 ) * squareSize, y: gridRectY + Math.floor(i/gridCols) * squareSize + squareSize};
+				points.push(point);
+			}
+		}
+	}
 }
 
 function onItemMove(event) {
@@ -128,10 +163,90 @@ function onItemMove(event) {
 		ctx.beginPath();
 		ctx.moveTo(selectedItem.x + selectedItem.rect.width / 2, selectedItem.y + selectedItem.rect.height / 2);
 		ctx.lineTo(points[i].x, points[i].y);
-		ctx.strokeStyle = "#ff0000";
-		ctx.lineWidth = 0.4;
+		if( // si el punto obtenido no devuelve un elemento cell, significa que está ocupado o fuera del grid (puede ser fuera ya que con los items de más de 1x1 compruebo los puntos adyacentes también)
+			(selectedItem.width === 1 && document.elementFromPoint(points[i].x, points[i].y).className === "cell") ||
+			(selectedItem.width === 2 && selectedItem.height === 1 &&
+				(
+					(document.elementFromPoint(points[i].x + 5, points[i].y).className === "cell") &&
+					(document.elementFromPoint(points[i].x - 5, points[i].y).className === "cell")
+				)
+			) ||
+			(selectedItem.width === 2 && selectedItem.height === 2 &&
+				(
+					(document.elementFromPoint(points[i].x + 5, points[i].y + 5).className === "cell") &&
+					(document.elementFromPoint(points[i].x - 5, points[i].y + 5).className === "cell") &&
+					(document.elementFromPoint(points[i].x + 5, points[i].y - 5).className === "cell") &&
+					(document.elementFromPoint(points[i].x - 5, points[i].y - 5).className === "cell")
+				)
+			)
+		){
+			ctx.strokeStyle = "#00ff00";
+		}
+		else {
+			ctx.strokeStyle = "#ff0000";
+		}
+		ctx.lineWidth = 0.8;
 		ctx.stroke();
 	}
+}
+
+function onItemDrop() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	selectedItem.rect = selectedItem.element.getBoundingClientRect(); // hay que actualizar el BoundingClientRect del item porque la posición ha cambiado (en onItemMove no hacía falta actualizarlo porque no se usan las posiciones x e y)
+	selectedItem.element.classList.remove("grabbing");
+	document.removeEventListener("mousemove", onItemMove);
+	selectedItem.element.removeEventListener("mouseup", onItemDrop);
+	
+	const gridRect = selectedGrid.rect;
+	// let gridCells = selectedGrid.cells;
+	// let gridCols = selectedGrid.cols;
+
+	const itemRect = selectedItem.rect;
+
+	if (
+		gridRect.right < itemRect.left ||
+		gridRect.left > itemRect.right ||
+		gridRect.bottom < itemRect.top ||
+		gridRect.top > itemRect.bottom
+  	){
+		const inventoryRect = document.getElementById("inventory").getBoundingClientRect();
+		if(inventoryRect.right > itemRect.left &&
+			inventoryRect.left + 210 < itemRect.right) selectedItem.element.style.left = `${inventoryRect.right + 10}px`;
+		else if(inventoryRect.left < itemRect.right &&
+			inventoryRect.right - 210 > itemRect.left) selectedItem.element.style.left = `${inventoryRect.left - 10 - selectedItem.width * squareSize}px`;
+	
+	}
+	else{
+		let shorterPoint= {x: 0, y: 0};
+		let shorterDistance = 5000;
+		let distance;
+		for(let i = 0; i < points.length; i++){
+			distance = Math.sqrt(Math.pow(points[i].x - itemRect.width/2 - itemRect.x, 2) + Math.pow(points[i].y - itemRect.height/2 - itemRect.y, 2));
+			if(distance < shorterDistance) {
+				shorterDistance = distance;
+				shorterPoint.x = points[i].x - selectedItem.width * squareHalf + 1;
+				shorterPoint.y = points[i].y - selectedItem.height * squareHalf + 1;
+			}
+		}
+
+		selectedItem.element.style.left = `${shorterPoint.x}px`;
+		selectedItem.element.style.top = `${shorterPoint.y}px`;
+
+		// if(selectedItem.width === 1){
+		// 	let indexX = (shorterPoint.x - gridRect.x - 1) / 50 + 1;
+		// 	let indexY = (shorterPoint.y - gridRect.y - 1) / 50 + 1;
+		// 	let index = (indexY - 1) * gridCols + (indexX - 1);
+		// 	console.log(indexX + ", " + indexY + " = " + index);
+		// }
+		// else if(selectedItem.width === 2 && selectedItem.height === 1){
+
+		// }
+		// else if(selectedItem.width === 2 && selectedItem.height === 2){
+
+		// }
+	}
+	removeActiveGrid();
 }
 
 function getGrid(type){
@@ -145,108 +260,10 @@ function getGrid(type){
 	}
 }
 
-function onItemDrop(event) {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	const itemElement = event.target;
-	itemElement.classList.remove("grabbing");
-	document.removeEventListener("mousemove", onItemMove);
-	itemElement.removeEventListener("mouseup", onItemDrop);
-
-	const itemId = itemElement.getAttribute("data-itemid");
-	const item = items[itemId];
-	
-	const gridElement = document.querySelector(`#grid-${item.type}`);
-	const gridRect = gridElement.getBoundingClientRect();
-	const itemRect = itemElement.getBoundingClientRect();
-	const grid = getGrid(item.type);
-
-	if (
-		gridRect.right < itemRect.left ||
-		gridRect.left > itemRect.right ||
-		gridRect.bottom < itemRect.top ||
-		gridRect.top > itemRect.bottom
-  	){
-		const inventoryRect = document.getElementById("inventory").getBoundingClientRect();
-		if(inventoryRect.right > itemRect.left &&
-			inventoryRect.left + 210 < itemRect.right) itemElement.style.left = `${inventoryRect.right + 10}px`;
-		else if(inventoryRect.left < itemRect.right &&
-			inventoryRect.right - 210 > itemRect.left) itemElement.style.left = `${inventoryRect.left - 10 - item.width * squareSize}px`;
-	
-	}
-	else{
-		let shorterPoint= {x: 0, y: 0};
-		let shorterDistance = 5000;
-		let distance;
-		for(let i = 0; i < points.length; i++){
-			distance = Math.sqrt(Math.pow(points[i].x - itemRect.width/2 - itemRect.x, 2) + Math.pow(points[i].y - itemRect.height/2 - itemRect.y, 2));
-			if(distance < shorterDistance) {
-				shorterDistance = distance;
-				shorterPoint.x = points[i].x - item.width * squareHalf + 1;
-				shorterPoint.y = points[i].y - item.height * squareHalf + 1;
-			}
-		}
-
-		itemElement.style.left = `${shorterPoint.x}px`;
-		itemElement.style.top = `${shorterPoint.y}px`;
-
-		if(item.width === 1){
-			let indexX = (shorterPoint.x - gridRect.x - 1) / 50 + 1;
-			let indexY = (shorterPoint.y - gridRect.y - 1) / 50 + 1;
-			let index = (indexY - 1) * grid.cols + (indexX - 1);
-			console.log(indexX + ", " + indexY + " = " + index);
-			grid.cells[index].empty = false;
-			for(let i = 0; i < grid.cells.length; i++){
-				console.log(grid.cells[i]);
-			}
-		}
-		else if(item.width === 2 && item.height === 1){
-
-		}
-		else if(item.width === 2 && item.height === 2){
-
-		}
-	}
+function setActiveGrid(type){
+    document.body.setAttribute("data-active-grid", type);		
 }
 
-function setFreePoints(itemElement){
-	points.length = 0;
-
-	const itemId = itemElement.dataset.itemid;
-	const itemType = itemElement.dataset.type;
-	let item = items[parseInt(itemId,10)];
-	const gridRect = document.getElementById(`grid-${item.type}`).getBoundingClientRect();
-
-	let grid = getGrid(itemType);
-
-	let cols = grid.cols;
-
-	if(item.width === 1){
-		for(let i = 0; i < grid.cells.length; i++){
-			if(grid.cells[i].empty){
-				console.log("Cell " + (i + 1) + " is valid to place an item of 1x1");
-				const point = {x: gridRect.x + (cols - (i%cols) - 1 ) * squareSize + squareHalf, y: gridRect.y + Math.floor(i/cols) * squareSize + squareHalf};
-				points.push(point);
-			}
-			else console.log("Cell " + (i + 1) + " is NOT valid to place an item of 1x1");
-		}
-	}
-	else if(item.width === 2 && item.height === 1){
-		for(let i = 0; i < grid.cells.length; i++){
-			if((i+1) % cols !== 0 && grid.cells[i].empty && grid.cells[i+1].empty){
-				console.log("Cell " + (i + 1) + " is valid to place an item of 2x1");
-				const point = {x: gridRect.x + (cols - (i%cols) - 1 ) * squareSize, y: gridRect.y + Math.floor(i/cols) * squareSize + squareHalf};
-				points.push(point);
-			}
-		}
-	}
-	else if(item.width === 2 && item.height === 2){
-		let cellsArrayLength = grid.cells.length - 4;
-		for(let i = 0; i < cellsArrayLength; i++){
-			if((i+1) % 4 !== 0 && grid.cells[i].empty && grid.cells[i+1].empty && grid.cells[i+4].empty && grid.cells[i+5].empty){
-				console.log("Cell " + (i + 1) + " is valid to place an item of 2x2");
-				const point = {x: gridRect.x + (cols - (i%cols) - 1 ) * squareSize, y: gridRect.y + Math.floor(i/cols) * squareSize + squareSize};
-				points.push(point);
-			}
-		}
-	}
+function removeActiveGrid() {
+    document.body.setAttribute("data-active-grid", ""); // no lo borro para que la transición al quitarlo tenga efecto
 }
