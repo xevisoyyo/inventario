@@ -21,6 +21,9 @@ body[data-active-grid="resources"] .container.resources .grid{
 body[data-active-grid="consumables"] .container.consumables .grid{
 	background-color: rgba(180, 150, 150, 0.7);
 }
+canvas{
+	pointer-events: none;
+}
 
 .inventory{
 	background-color: rgb(120 120,120);
@@ -130,6 +133,13 @@ div{
   z-index: 2;
   pointer-events: none;
 }
-/* .lines-container .line.red{
-  
-} */
+.menu{
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(253, 2, 2, 0.5);
+}
