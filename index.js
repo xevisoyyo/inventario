@@ -106,7 +106,7 @@ function onItemGrab(event) {
 	selectedGrid = getGrid(selectedItem.type);
 	selectedGrid.rect = selectedGrid.element.getBoundingClientRect();
 
-	setFreePoints();
+	setPoints();
 
 	mouseOffset.x = event.pageX - selectedItem.rect.left;
  	mouseOffset.y = event.pageY - selectedItem.rect.top;
@@ -117,7 +117,7 @@ function onItemGrab(event) {
 	selectedItem.element.addEventListener("mouseup", onItemDrop);
 }
 
-function setFreePoints(){
+function setPoints(){
 	points.length = 0;
 
 	const gridRectX = selectedGrid.rect.x;
@@ -128,7 +128,12 @@ function setFreePoints(){
 
 	if(selectedItem.width === 1){
 		for(let i = 0; i < gridCells; i++){
-			const point = {x: gridRectX + (gridCols - (i%gridCols) - 1 ) * squareSize + squareHalf, y: gridRectY + Math.floor(i/gridCols) * squareSize + squareHalf};
+			const point = { x: gridRectX + (gridCols - (i%gridCols) - 1 ) * squareSize + squareHalf, y: gridRectY + Math.floor(i/gridCols) * squareSize + squareHalf };
+			let uniquePoint = document.elementFromPoint(point.x, point.y);
+			if(uniquePoint.className === "cell"	|| uniquePoint === selectedItem.element){
+				point.empty = true;
+			}
+			else point.empty = false;
 			points.push(point);
 		}
 	}
@@ -136,6 +141,14 @@ function setFreePoints(){
 		for(let i = 0; i < gridCells; i++){
 			if((i+1) % gridCols !== 0){
 				const point = {x: gridRectX + (gridCols - (i%gridCols) - 1 ) * squareSize, y: gridRectY + Math.floor(i/gridCols) * squareSize + squareHalf};
+				let rightPoint = document.elementFromPoint(point.x + 5, point.y);
+				let leftPoint = document.elementFromPoint(point.x - 5, point.y);
+				if( (rightPoint.className === "cell" || rightPoint === selectedItem.element) &&
+					(leftPoint.className === "cell" || leftPoint === selectedItem.element))
+				{
+					point.empty = true;
+				}
+				else point.empty = false;
 				points.push(point);
 			}
 		}
@@ -145,6 +158,18 @@ function setFreePoints(){
 		for(let i = 0; i < cellsArrayLength; i++){
 			if((i+1) % 4 !== 0){
 				const point = {x: gridRectX + (gridCols - (i%gridCols) - 1 ) * squareSize, y: gridRectY + Math.floor(i/gridCols) * squareSize + squareSize};
+				let topRightPoint = document.elementFromPoint(point.x + 5, point.y + 5);
+				let topLeftPoint = document.elementFromPoint(point.x - 5, point.y + 5);
+				let botRightPoint = document.elementFromPoint(point.x + 5, point.y - 5);
+				let botLeftPoint = document.elementFromPoint(point.x - 5, point.y - 5);
+				if( (topRightPoint.className === "cell" || topRightPoint === selectedItem.element) &&
+					(topLeftPoint.className === "cell" || topLeftPoint === selectedItem.element) &&
+					(botRightPoint.className === "cell" || botRightPoint === selectedItem.element) &&
+					(botLeftPoint.className === "cell" || botLeftPoint === selectedItem.element))
+				{
+					point.empty = true;
+				}
+				else point.empty = false;
 				points.push(point);
 			}
 		}
@@ -163,28 +188,10 @@ function onItemMove(event) {
 		ctx.beginPath();
 		ctx.moveTo(selectedItem.x + selectedItem.rect.width / 2, selectedItem.y + selectedItem.rect.height / 2);
 		ctx.lineTo(points[i].x, points[i].y);
-		if( // si el punto obtenido no devuelve un elemento cell, significa que está ocupado o fuera del grid (puede ser fuera ya que con los items de más de 1x1 compruebo los puntos adyacentes también)
-			(selectedItem.width === 1 && document.elementFromPoint(points[i].x, points[i].y).className === "cell") ||
-			(selectedItem.width === 2 && selectedItem.height === 1 &&
-				(
-					(document.elementFromPoint(points[i].x + 5, points[i].y).className === "cell") &&
-					(document.elementFromPoint(points[i].x - 5, points[i].y).className === "cell")
-				)
-			) ||
-			(selectedItem.width === 2 && selectedItem.height === 2 &&
-				(
-					(document.elementFromPoint(points[i].x + 5, points[i].y + 5).className === "cell") &&
-					(document.elementFromPoint(points[i].x - 5, points[i].y + 5).className === "cell") &&
-					(document.elementFromPoint(points[i].x + 5, points[i].y - 5).className === "cell") &&
-					(document.elementFromPoint(points[i].x - 5, points[i].y - 5).className === "cell")
-				)
-			)
-		){
-			ctx.strokeStyle = "#00ff00";
-		}
-		else {
-			ctx.strokeStyle = "#ff0000";
-		}
+
+		if( points[i].empty ) ctx.strokeStyle = "#00ff00";
+		else ctx.strokeStyle = "#ff0000";
+
 		ctx.lineWidth = 0.8;
 		ctx.stroke();
 	}
@@ -199,11 +206,9 @@ function onItemDrop() {
 	selectedItem.element.removeEventListener("mouseup", onItemDrop);
 	
 	const gridRect = selectedGrid.rect;
-	// let gridCells = selectedGrid.cells;
-	// let gridCols = selectedGrid.cols;
-
 	const itemRect = selectedItem.rect;
 
+	// fuera del grid
 	if (
 		gridRect.right < itemRect.left ||
 		gridRect.left > itemRect.right ||
@@ -217,34 +222,26 @@ function onItemDrop() {
 			inventoryRect.right - 210 > itemRect.left) selectedItem.element.style.left = `${inventoryRect.left - 10 - selectedItem.width * squareSize}px`;
 	
 	}
+	// dentro del grid
 	else{
 		let shorterPoint= {x: 0, y: 0};
 		let shorterDistance = 5000;
 		let distance;
 		for(let i = 0; i < points.length; i++){
-			distance = Math.sqrt(Math.pow(points[i].x - itemRect.width/2 - itemRect.x, 2) + Math.pow(points[i].y - itemRect.height/2 - itemRect.y, 2));
-			if(distance < shorterDistance) {
-				shorterDistance = distance;
-				shorterPoint.x = points[i].x - selectedItem.width * squareHalf + 1;
-				shorterPoint.y = points[i].y - selectedItem.height * squareHalf + 1;
+			if ( points[i].empty ){
+				distance = Math.sqrt(Math.pow(points[i].x - itemRect.width/2 - itemRect.x, 2) + Math.pow(points[i].y - itemRect.height/2 - itemRect.y, 2));
+				if(distance < shorterDistance) {
+					shorterDistance = distance;
+					shorterPoint.x = points[i].x - selectedItem.width * squareHalf + 1;
+					shorterPoint.y = points[i].y - selectedItem.height * squareHalf + 1;
+				}
 			}
 		}
 
-		selectedItem.element.style.left = `${shorterPoint.x}px`;
-		selectedItem.element.style.top = `${shorterPoint.y}px`;
-
-		// if(selectedItem.width === 1){
-		// 	let indexX = (shorterPoint.x - gridRect.x - 1) / 50 + 1;
-		// 	let indexY = (shorterPoint.y - gridRect.y - 1) / 50 + 1;
-		// 	let index = (indexY - 1) * gridCols + (indexX - 1);
-		// 	console.log(indexX + ", " + indexY + " = " + index);
-		// }
-		// else if(selectedItem.width === 2 && selectedItem.height === 1){
-
-		// }
-		// else if(selectedItem.width === 2 && selectedItem.height === 2){
-
-		// }
+		if(distance){
+			selectedItem.element.style.left = `${shorterPoint.x}px`;
+			selectedItem.element.style.top = `${shorterPoint.y}px`;
+		}
 	}
 	removeActiveGrid();
 }
@@ -266,4 +263,33 @@ function setActiveGrid(type){
 
 function removeActiveGrid() {
     document.body.setAttribute("data-active-grid", ""); // no lo borro para que la transición al quitarlo tenga efecto
+}
+
+function isPointEmpty(pointX, pointY){
+	let firstElement = null;
+	const elements = document.elementsFromPoint(pointX, pointY);
+	const filteredElements = elements.filter(elemento => elemento !== selectedItem.element);
+
+	if (filteredElements.length > 0) {
+		firstElement = filteredElements[0]; // Obtener el elemento superior
+
+		if( // si el punto obtenido no devuelve un elemento cell, significa que está ocupado o fuera del grid (puede ser fuera ya que con los items de más de 1x1 compruebo los puntos adyacentes también)
+			(selectedItem.width === 1 && document.elementFromPoint(pointX, pointY).className === "cell") ||
+			(selectedItem.width === 2 && selectedItem.height === 1 &&
+				(
+					(document.elementFromPoint(pointX + 5, pointY).className === "cell") &&
+					(document.elementFromPoint(pointX - 5, pointY).className === "cell")
+				)
+			) ||
+			(selectedItem.width === 2 && selectedItem.height === 2 &&
+				(
+					(document.elementFromPoint(pointX - 5, pointY + 5).className === "cell") &&
+					(document.elementFromPoint(pointX + 5, pointY + 5).className === "cell") &&
+					(document.elementFromPoint(pointX + 5, pointY - 5).className === "cell") &&
+					(document.elementFromPoint(pointX - 5, pointY - 5).className === "cell")
+				)
+			)
+		) return true;
+		else return false;
+	} else return false;
 }
