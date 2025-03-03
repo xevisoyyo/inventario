@@ -379,12 +379,12 @@ function makeAMess(){
 function switchRays(el){
 	if(showRays){
 		showRays = false;
-		el.textContent = "Mostar los rayos";
+		el.textContent = "Activar rayos";
 		el.classList.remove("show");
 	}
 	else{
 		showRays = true;
-		el.textContent = "Ocultar los rayos";
+		el.textContent = "Desctivar rayos";
 		el.classList.add("show");
 	}
 }

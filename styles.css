@@ -6,8 +6,15 @@ body{
   justify-content: center;
   height: 100vh;
   margin: 0;
+  background-image: linear-gradient(rgba(75, 54, 54, 0.5), rgb(68, 6, 6)), url('fondo.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
 	background-color: rgb(100, 100, 100);
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
 }
 body[data-active-grid] .container .grid{
 	transition: all 1.3s ease;
@@ -26,7 +33,7 @@ canvas{
 }
 
 .inventory{
-	background-color: rgb(120 120,120);
+	background-color: rgba(120 120,120, 0.7);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -98,17 +105,17 @@ div{
 .item[data-type="bag"],
 .container.bag{
 	box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.3);
-	background-color: rgba(150, 250, 150, 0.7);
+	background-color: rgba(116, 199, 116, 0.85);
 }
 .item[data-type="resources"],
 .container.resources{
 	box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.3);
-	background-color: rgba(150, 150, 250, 0.7);
+	background-color: rgba(145, 145, 211, 0.85);
 }
 .item[data-type="consumables"],
 .container.consumables{
 	box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.3);
-	background-color: rgba(250, 150, 150, 0.7);
+	background-color: rgba(211, 143, 143, 0.85);
 }
 .item-1x1 {
   width: 50px;
@@ -140,37 +147,46 @@ div{
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(120 120,120);
+  background-color: rgba(120 120,120,.7);
   border-radius: 10px;
 }
 .menu .button{
-  border-radius: 10px;
+  min-width: 140px;
+  border-radius: 15px;
+  border: 3px solid black;
   margin: 10px;
   padding: 10px;
   font-size: 20px;
   user-select: none;
   cursor: pointer;
-  color: white;
-  background-color: rgb(90, 90, 184);
   text-align: center;
   transition: all .5s ease;
+  color: rgb(168, 168, 226);
+  background-color: rgb(76, 76, 133);
+  border-color: rgb(26, 26, 44);
 }
 
 .menu .button:hover{
-  background-color: rgb(150, 150, 250);
+  background-color: rgb(91, 91, 214);
+  border-color: rgb(14, 14, 73);
 }
 
 .menu .switch-rays{
-  min-width: 150px;
+  color: rgb(187, 141, 141);
   background-color: rgb(116, 48, 48);
+  border-color: rgb(46, 16, 16);
 }
 .menu .switch-rays:hover{
-  background-color: rgb(250, 150, 150);
+  background-color: rgb(187, 61, 61);
+  border-color: rgb(78, 14, 14);
 }
 
 .menu .switch-rays.show{
-  background-color: rgb(60, 165, 60);
+  color: rgb(145, 192, 145);
+  background-color: rgb(53, 109, 53);
+  border-color: rgb(18, 36, 18);
 }
 .menu .switch-rays.show:hover{
-  background-color: rgb(150, 250, 150);
+  background-color: rgb(62, 119, 62);
+  border-color: rgb(8, 49, 8);
 }
