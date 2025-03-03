@@ -43,21 +43,27 @@ const squareHalf = 25;
 createGridsAndItems();
 
 function createGridsAndItems(){
+	const center = window.innerWidth / 2;
+
 	createGrid("bag", 16);
 	createGrid("resources", 8);
 	createGrid("consumables", 4);
 
-	createItem({name: "A",			width: 1, height: 1, x: 20, y: 10, 	type: "bag"});
-	createItem({name: "B", 			width: 1, height: 1, x: 40, y: 10, 	type: "bag"});
-	createItem({name: "C", 			width: 1, height: 1, x: 60, y: 10, 	type: "bag"});
-	createItem({name: "Palo", 		width: 2, height: 1, x: 40, y: 70, 	type: "bag"});
-	createItem({name: "Casco", 		width: 2, height: 2, x: 60, y: 150, type: "bag"});
-	createItem({name: "D", 			width: 1, height: 1, x: 10, y: 90, 	type: "resources"});
-	createItem({name: "E", 			width: 1, height: 1, x: 10, y: 120, type: "resources"});
-	createItem({name: "G",			width: 1, height: 1, x: 10, y: 140, type: "resources"});
-	createItem({name: "Recurso", 	width: 2, height: 1, x: 70, y: 70, 	type: "resources"});
-	createItem({name: "H", 			width: 1, height: 1, x: 40, y: 180, type: "consumables"});
-	createItem({name: "Manzanas", 	width: 2, height: 1, x: 70, y: 150, type: "consumables"});
+	createItem({type: "bag",			name: "A",			width: 1, height: 1, y: 30, x: center - 242});
+	createItem({type: "bag",			name: "B", 			width: 1, height: 1, y: 90, x: center - 242});
+	createItem({type: "bag",			name: "C", 			width: 1, height: 1, y: 150, x: center - 242});
+	createItem({type: "bag",			name: "D", 			width: 1, height: 1, y: 210, x: center - 242});
+	createItem({type: "bag",			name: "Palo", 		width: 2, height: 1, y: 270, x: center - 292});
+	createItem({type: "bag",			name: "Chancletas",	width: 2, height: 1, y: 330, x: center - 292});
+	createItem({type: "bag",			name: "Casco", 		width: 2, height: 2, y: 390, x: center - 292});
+	createItem({type: "bag",			name: "Motosierra",	width: 2, height: 2, y: 500, x: center - 292});
+	createItem({type: "resources",		name: "D", 			width: 1, height: 1, y: 30, x: center + 192});
+	createItem({type: "resources",		name: "E", 			width: 1, height: 1, y: 90, x: center + 192});
+	createItem({type: "resources",		name: "Recurso", 	width: 2, height: 1, y: 150, x: center + 192});
+	createItem({type: "resources",		name: "Recurso 2", 	width: 2, height: 2, y: 210, x: center + 192});
+	createItem({type: "consumables",	name: "F", 			width: 1, height: 1, y: 320, x: center + 192});
+	createItem({type: "consumables",	name: "G", 			width: 1, height: 1, y: 380, x: center + 192});
+	createItem({type: "consumables",	name: "Manzanas", 	width: 2, height: 1, y: 440, x: center + 192});
 }
 
 function createGrid(type, nomberOfCells) {
