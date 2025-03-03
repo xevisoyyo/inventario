@@ -37,31 +37,32 @@ const body = document.body;
 let mouseOffset = {x: 0, y: 0};
 const squareSize = 50;
 const squareHalf = 25;
+let showRays = false;
 
 createGridsAndItems();
 
 function createGridsAndItems(){
-	const center = window.innerWidth / 2;
-
 	createGrid("bag", 16);
 	createGrid("resources", 8);
 	createGrid("consumables", 4);
 
-	createItem({type: "bag",			name: "A",			width: 1, height: 1, y: 30, x: center - 242});
-	createItem({type: "bag",			name: "B", 			width: 1, height: 1, y: 90, x: center - 242});
-	createItem({type: "bag",			name: "C", 			width: 1, height: 1, y: 150, x: center - 242});
-	createItem({type: "bag",			name: "D", 			width: 1, height: 1, y: 210, x: center - 242});
-	createItem({type: "bag",			name: "Palo", 		width: 2, height: 1, y: 270, x: center - 292});
-	createItem({type: "bag",			name: "Chancletas",	width: 2, height: 1, y: 330, x: center - 292});
-	createItem({type: "bag",			name: "Casco", 		width: 2, height: 2, y: 390, x: center - 292});
-	createItem({type: "bag",			name: "Motosierra",	width: 2, height: 2, y: 500, x: center - 292});
-	createItem({type: "resources",		name: "E", 			width: 1, height: 1, y: 30, x: center + 192});
-	createItem({type: "resources",		name: "F", 			width: 1, height: 1, y: 90, x: center + 192});
-	createItem({type: "resources",		name: "Recurso", 	width: 2, height: 1, y: 150, x: center + 192});
-	createItem({type: "resources",		name: "Recurso 2", 	width: 2, height: 2, y: 210, x: center + 192});
-	createItem({type: "consumables",	name: "G", 			width: 1, height: 1, y: 320, x: center + 192});
-	createItem({type: "consumables",	name: "H", 			width: 1, height: 1, y: 380, x: center + 192});
-	createItem({type: "consumables",	name: "Manzanas", 	width: 2, height: 1, y: 440, x: center + 192});
+	createItem({type: "bag",			name: "A",			width: 1, height: 1});
+	createItem({type: "bag",			name: "B", 			width: 1, height: 1});
+	createItem({type: "bag",			name: "C", 			width: 1, height: 1});
+	createItem({type: "bag",			name: "D", 			width: 1, height: 1});
+	createItem({type: "bag",			name: "Palo", 		width: 2, height: 1});
+	createItem({type: "bag",			name: "Chancletas",	width: 2, height: 1});
+	createItem({type: "bag",			name: "Casco", 		width: 2, height: 2});
+	createItem({type: "bag",			name: "Motosierra",	width: 2, height: 2});
+	createItem({type: "resources",		name: "E", 			width: 1, height: 1});
+	createItem({type: "resources",		name: "F", 			width: 1, height: 1});
+	createItem({type: "resources",		name: "Recurso", 	width: 2, height: 1});
+	createItem({type: "resources",		name: "Recurso 2", 	width: 2, height: 2});
+	createItem({type: "consumables",	name: "G", 			width: 1, height: 1});
+	createItem({type: "consumables",	name: "H", 			width: 1, height: 1});
+	createItem({type: "consumables",	name: "Manzanas", 	width: 2, height: 1});
+
+	makeAMess();
 }
 
 function createGrid(type, nomberOfCells) {
@@ -158,9 +159,9 @@ function setPoints(){
 		}
 	}
 	else if(selectedItem.width === 2 && selectedItem.height === 2){
-		let cellsArrayLength = gridCells - 4;
+		let cellsArrayLength = gridCols * 3;
 		for(let i = 0; i < cellsArrayLength; i++){
-			if((i+1) % 4 !== 0){
+			if((i+1) % gridCols !== 0){
 				const point = {x: gridRectX + (gridCols - (i%gridCols) - 1 ) * squareSize, y: gridRectY + Math.floor(i/gridCols) * squareSize + squareSize};
 				let topRightPoint = document.elementFromPoint(point.x + 5, point.y + 5);
 				let topLeftPoint = document.elementFromPoint(point.x - 5, point.y + 5);
@@ -186,6 +187,8 @@ function onItemMove(event) {
 	selectedItem.element.style.left = selectedItem.x + "px";
 	selectedItem.element.style.top = selectedItem.y + "px";
 	
+	if(!showRays) return;
+
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	
 	for(let i = 0; i < points.length; i++){
@@ -193,10 +196,10 @@ function onItemMove(event) {
 		ctx.moveTo(selectedItem.x + selectedItem.rect.width / 2, selectedItem.y + selectedItem.rect.height / 2);
 		ctx.lineTo(points[i].x, points[i].y);
 
-		if( points[i].empty ) ctx.strokeStyle = "#00ff00";
-		else ctx.strokeStyle = "#ff0000";
+		if( points[i].empty ) ctx.strokeStyle = "rgb(22, 128, 22)";
+		else ctx.strokeStyle = "rgb(139, 32, 32)";
 
-		ctx.lineWidth = 0.8;
+		ctx.lineWidth = 2;
 		ctx.stroke();
 	}
 }
@@ -298,11 +301,10 @@ function isPointEmpty(pointX, pointY){
 	} else return false;
 }
 
-// jugando un poco con lo sitems
+// jugando un poco con los items
+createMenu();
 
-function robot(){
-	console.log("Botón Robot clicado!");
-	alert("Botón Robot clicado!");
+function makeARobot(){
 	const it = document.querySelectorAll(".item");
 	 it[0].style = "left: calc(50% + 192px); top: calc(50% - 370px)";	// A
 	 it[1].style = "left: calc(50% + 192px); top: calc(50% - 310px)";	// B
@@ -320,17 +322,95 @@ function robot(){
 	it[13].style = "left: calc(50% - 242px); top: calc(50% - 190px)";	// H
 	it[14].style = "left: calc(50% - 292px); top: calc(50% - 130px)";	// Manzanas
 }
-
-function createMenu(){
-	const menu = document.createElement("div");
-	menu.id = "menu";
-	menu.className = "menu";
-
-	const robot = document.createElement("button");
-	robot.textContent = "Robot";
-	robot.addEventListener("click", robot);
-	menu.appendChild(robot);
-	
-	document.body.appendChild(menu);
+function makeASpider(){
+	const it = document.querySelectorAll(".item");
+	 it[0].style = "left: calc(50% - 242px); top: calc(50% + 210px)";	// A
+	 it[1].style = "left: calc(50% + 62px); top: calc(50% + 202px)";	// B
+	 it[2].style = "left: calc(50% - 82px); top: calc(50% + 195px)";	// C
+	 it[3].style = "left: calc(50% + 302px); top: calc(50% + 190px)";	// D
+	 it[4].style = "left: calc(50% + 242px); top: calc(50% + 160px)";	// Palo
+	 it[5].style = "left: calc(50% - 322px); top: calc(50% + 140px)";	// Chancletas
+	 it[6].style = "left: calc(50% - 285px); top: calc(50% + 90px)"; 	// Casco
+	 it[7].style = "left: calc(50% + 190px); top: calc(50% + 80px)"; 	// Motosierra
+	 it[8].style = "left: calc(50% + 52px); top: calc(50% + 182px)";	// E
+	 it[9].style = "left: calc(50% - 92px); top: calc(50% + 182px)";	// F
+	it[10].style = "left: calc(50% + 122px); top: calc(50% + 155px)";	// Recurso
+	it[11].style = "left: calc(50% - 232px); top: calc(50% + 140px)";	// Recurso 2
+	it[12].style = "left: calc(50% - 262px); top: calc(50% + 250px)";	// G
+	it[13].style = "left: calc(50% - 322px); top: calc(50% + 160px)";	// H
+	it[14].style = "left: calc(50% + 162px); top: calc(50% + 190px)";	// Manzanas
 }
-createMenu();
+function makeADeer(){
+	const it = document.querySelectorAll(".item");
+	 it[0].style = "left: calc(50% - 252px); top: calc(50% - 320px)";	// A
+	 it[1].style = "left: calc(50% - 322px); top: calc(50% - 182px)";	// B
+	 it[2].style = "left: calc(50% + 192px); top: calc(50% - 300px)";	// C
+	 it[3].style = "left: calc(50% + 242px); top: calc(50% - 180px)";	// D
+	 it[4].style = "left: calc(50% + 178px); top: calc(50% - 150px)";	// Palo
+	 it[5].style = "left: calc(50% + 222px); top: calc(50% - 280px)";	// Chancletas
+	 it[6].style = "left: calc(50% + 295px); top: calc(50% - 340px)"; 	// Casco
+	 it[7].style = "left: calc(50% + 255px); top: calc(50% - 260px)"; 	// Motosierra
+	 it[8].style = "left: calc(50% - 402px); top: calc(50% - 282px)";	// E
+	 it[9].style = "left: calc(50% - 301px); top: calc(50% - 192px)";	// F
+	it[10].style = "left: calc(50% - 322px); top: calc(50% - 300px)";	// Recurso
+	it[11].style = "left: calc(50% - 371px); top: calc(50% - 275px)";	// Recurso 2
+	it[12].style = "left: calc(50% + 252px); top: calc(50% - 170px)";	// G
+	it[13].style = "left: calc(50% - 392px); top: calc(50% - 309px)";	// H
+	it[14].style = "left: calc(50% - 276px); top: calc(50% - 170px)";	// Manzanas
+}
+function makeAMess(){
+	const it = document.querySelectorAll(".item");
+	 it[0].style = `left: calc(50% + 320px); top: calc(50% - 220px)`;	// A
+	 it[1].style = `left: calc(50% + 192px); top: calc(50% - 310px)`;	// B
+	 it[2].style = `left: calc(50% - 192px); top: calc(50% + 222px)`;	// C
+	 it[3].style = `left: calc(50% + 380px); top: calc(50% - 32px)`;	// D
+	 it[4].style = `left: calc(50% - 312px); top: calc(50% + 32px)`;	// Palo
+	 it[5].style = `left: calc(50% - 332px); top: calc(50% - 142px)`;	// Chancletas
+	 it[6].style = `left: calc(50% + 192px); top: calc(50% + 192px)`; 	// Casco
+	 it[7].style = `left: calc(50% - 82px); top: calc(50% - 322px)`; 	// Motosierra
+	 it[8].style = `left: calc(50% - 362px); top: calc(50% + 122px)`;	// E
+	 it[9].style = `left: calc(50% - 292px); top: calc(50% - 292px)`;	// F
+	it[10].style = `left: calc(50% - 392px); top: calc(50% - 62px)`;	// Recurso
+	it[11].style = `left: calc(50% + 222px); top: calc(50% - 132px)`;	// Recurso 2
+	it[12].style = `left: calc(50% + 282px); top: calc(50% + 112px)`;	// G
+	it[13].style = `left: calc(50% - 422px); top: calc(50% - 192px)`;	// H
+	it[14].style = `left: calc(50% - 310px); top: calc(50% + 252px)`;	// Manzanas
+}
+function switchRays(el){
+	if(showRays){
+		showRays = false;
+		el.textContent = "Mostar los rayos";
+		el.classList.remove("show");
+	}
+	else{
+		showRays = true;
+		el.textContent = "Ocultar los rayos";
+		el.classList.add("show");
+	}
+}
+function getRandom(min, max){
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function createMenu(){
+	const menu = document.getElementById("menu");
+	menu.addEventListener("click", (e)=>{
+		const el = e.target;
+		switch (el.id){
+			case "random":
+				makeAMess();
+				break;
+			case "deer":
+				makeADeer();
+				break;
+			case "robot":
+				makeARobot();
+				break;
+			case "spider":
+				makeASpider();
+				break;
+			case "switch-rays":
+				switchRays(el);
+				break;
+		}
+	})
+}
