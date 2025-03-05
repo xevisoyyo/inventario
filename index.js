@@ -62,7 +62,7 @@ function createGridsAndItems(){
 	createItem({type: "consumables",	name: "H", 			width: 1, height: 1});
 	createItem({type: "consumables",	name: "Manzanas", 	width: 2, height: 1});
 
-	makeAMess();
+	makeItNeat();
 }
 
 function createGrid(type, nomberOfCells) {
@@ -340,30 +340,34 @@ function isPointEmpty(pointX, pointY){
 }
 
 // jugando un poco con los items
-createMenu();
+addingListenerToMenu();
 
-function createMenu(){
+function addingListenerToMenu(){
 	const menu = document.getElementById("menu");
-	menu.addEventListener("click", (e)=>{
-		const el = e.target;
-		switch (el.id){
-			case "random":
-				makeAMess();
-				break;
-			case "deer":
-				makeADeer();
-				break;
-			case "robot":
-				makeARobot();
-				break;
-			case "spider":
-				makeASpider();
-				break;
-			case "switch-rays":
-				switchRays(el);
-				break;
-		}
-	})
+	menu.addEventListener("click", makeAnAction);
+}
+function makeAnAction(e){
+	const el = e.target;
+	switch (el.id){
+		case "spider":
+			makeASpider();
+			break;
+		case "deer":
+			makeADeer();
+			break;
+		case "robot":
+			makeARobot();
+			break;
+		case "switch-rays":
+			switchRays(el);
+			break;
+		case "random":
+			makeAMess();
+			break;
+		case "random":
+			makeItNeat();
+			break;
+	}
 }
 function getRandom(min, max){
 	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -451,4 +455,22 @@ function makeAMess(){
 	it[12].style = `left: calc(50% + 282px); top: calc(50% + 112px)`;	// G
 	it[13].style = `left: calc(50% - 422px); top: calc(50% - 192px)`;	// H
 	it[14].style = `left: calc(50% - 310px); top: calc(50% + 252px)`;	// Manzanas
+}
+function makeItNeat(){
+	const it = document.querySelectorAll(".item");
+	it[0].style = `left: calc(50% + 320px); top: calc(50% - 220px)`;	// A
+	it[1].style = `left: calc(50% + 192px); top: calc(50% - 310px)`;	// B
+	it[2].style = `left: calc(50% - 192px); top: calc(50% + 222px)`;	// C
+	it[3].style = `left: calc(50% + 380px); top: calc(50% - 32px)`;	// D
+	it[4].style = `left: calc(50% - 312px); top: calc(50% + 32px)`;	// Palo
+	it[5].style = `left: calc(50% - 332px); top: calc(50% - 142px)`;	// Chancletas
+	it[6].style = `left: calc(50% + 192px); top: calc(50% + 192px)`; 	// Casco
+	it[7].style = `left: calc(50% - 82px); top: calc(50% - 322px)`; 	// Motosierra
+	it[8].style = `left: calc(50% - 362px); top: calc(50% + 122px)`;	// E
+	it[9].style = `left: calc(50% - 292px); top: calc(50% - 292px)`;	// F
+   it[10].style = `left: calc(50% - 392px); top: calc(50% - 62px)`;	// Recurso
+   it[11].style = `left: calc(50% + 222px); top: calc(50% - 132px)`;	// Recurso 2
+   it[12].style = `left: calc(50% + 282px); top: calc(50% + 112px)`;	// G
+   it[13].style = `left: calc(50% - 422px); top: calc(50% - 192px)`;	// H
+   it[14].style = `left: calc(50% - 310px); top: calc(50% + 252px)`;	// Manzanas
 }
