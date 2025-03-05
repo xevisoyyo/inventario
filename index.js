@@ -50,10 +50,10 @@ function createGridsAndItems(){
 	createItem({type: "bag",			name: "B", 			width: 1, height: 1});
 	createItem({type: "bag",			name: "C", 			width: 1, height: 1});
 	createItem({type: "bag",			name: "D", 			width: 1, height: 1});
-	createItem({type: "bag",			name: "Palo", 		width: 2, height: 1});
+	createItem({type: "bag",			name: "Casco",		width: 2, height: 1});
 	createItem({type: "bag",			name: "Chancletas",	width: 2, height: 1});
-	createItem({type: "bag",			name: "Casco", 		width: 2, height: 2});
-	createItem({type: "bag",			name: "Motosierra",	width: 2, height: 2});
+	createItem({type: "bag",			name: "Motosierra", width: 2, height: 2});
+	createItem({type: "bag",			name: "Palo",		width: 2, height: 2});
 	createItem({type: "resources",		name: "E", 			width: 1, height: 1});
 	createItem({type: "resources",		name: "F", 			width: 1, height: 1});
 	createItem({type: "resources",		name: "Recurso", 	width: 2, height: 1});
@@ -64,9 +64,8 @@ function createGridsAndItems(){
 
 	makeItNeat();
 }
-
 function createGrid(type, nomberOfCells) {
-	let grid = getGrid(type);
+	const grid = getGrid(type);
 	grid.element = document.getElementById(`grid-${type}`);
 	
 	for (let i = 0; i < nomberOfCells; i++) {
@@ -75,8 +74,8 @@ function createGrid(type, nomberOfCells) {
 		cellElement.setAttribute("data-id", i + 1);
 		grid.element.appendChild(cellElement);
 	}
+	grid.rect = grid.element.getBoundingClientRect();
 }
-
 function createItem({name, width, height, type, x, y}) {
 	// crea el item (objeto)
 	const item = {
@@ -101,13 +100,11 @@ function createItem({name, width, height, type, x, y}) {
 	items.push(item);
 	document.body.appendChild(item.element);
 }
-
 function onItemGrab(event) {
 	selectedItem = items[parseInt(event.target.dataset.itemid,10)];
 	selectedItem.rect = selectedItem.element.getBoundingClientRect();
 
 	selectedGrid = getGrid(selectedItem.type);
-	selectedGrid.rect = selectedGrid.element.getBoundingClientRect();
 
 	setPoints();
 
@@ -119,7 +116,6 @@ function onItemGrab(event) {
 	document.addEventListener("mousemove", onItemMove);
 	selectedItem.element.addEventListener("mouseup", onItemDrop);
 }
-
 function setPoints(){
 	points.length = 0;
 
@@ -186,7 +182,7 @@ function onItemMove(event) {
 	
 	if(!showRays) return;
 
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	clearCanvas();
 	
 	for(let i = 0; i < points.length; i++){
 		ctx.beginPath();
@@ -200,9 +196,8 @@ function onItemMove(event) {
 		ctx.stroke();
 	}
 }
-
 function onItemDrop() {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	clearCanvas();
 
 	selectedItem.rect = selectedItem.element.getBoundingClientRect(); // hay que actualizar el BoundingClientRect del item porque la posición ha cambiado (en onItemMove no hacía falta actualizarlo porque no se usan las posiciones x e y)
 	selectedItem.element.classList.remove("grabbing");
@@ -292,7 +287,6 @@ function onItemDrop() {
 	}
 	removeActiveGrid();
 }
-
 function getGrid(type){
 	switch(type){
 		case "bag":
@@ -303,15 +297,12 @@ function getGrid(type){
 			return con;
 	}
 }
-
 function setActiveGrid(type){
     document.body.setAttribute("data-active-grid", type);		
 }
-
 function removeActiveGrid() {
     document.body.setAttribute("data-active-grid", ""); // no lo borro para que la transición al quitarlo tenga efecto
 }
-
 function isPointEmpty(pointX, pointY){
 	const elements = document.elementsFromPoint(pointX, pointY);
 	const filteredElements = elements.filter(elemento => elemento !== selectedItem.element);
@@ -338,6 +329,9 @@ function isPointEmpty(pointX, pointY){
 		else return false;
 	} else return false;
 }
+function clearCanvas(){
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
 
 // jugando un poco con los items
 addingListenerToMenu();
@@ -347,6 +341,9 @@ function addingListenerToMenu(){
 	menu.addEventListener("click", makeAnAction);
 }
 function makeAnAction(e){
+
+	clearCanvas(); // solo por si existen los rayos del botón "activar rayos"
+
 	const el = e.target;
 	switch (el.id){
 		case "spider":
@@ -364,7 +361,7 @@ function makeAnAction(e){
 		case "random":
 			makeAMess();
 			break;
-		case "random":
+		case "order":
 			makeItNeat();
 			break;
 	}
@@ -375,13 +372,39 @@ function getRandom(min, max){
 function switchRays(el){
 	if(showRays){
 		showRays = false;
-		el.textContent = "Activar rayos";
+		el.textContent = "Rayos (off)";
 		el.classList.remove("show");
 	}
 	else{
 		showRays = true;
-		el.textContent = "Desctivar rayos";
+		el.textContent = "Rayos (on)";
 		el.classList.add("show");
+
+		// activo todos los rayos a modo de ejemplo de manera chusquera
+		let gridRectX = con.rect.x;
+		let gridRectY = con.rect.y;
+	
+		let gridCells = con.cols * con.rows;
+		let gridCols = con.cols;
+
+		let elRect = el.getBoundingClientRect();
+
+		for(let i = 0; i < gridCells; i++){
+			const point = { x: gridRectX + (gridCols - (i%gridCols) - 1 ) * squareSize + squareHalf, y: gridRectY + Math.floor(i/gridCols) * squareSize + squareHalf };
+			let uniquePoint = document.elementFromPoint(point.x, point.y);
+			if(uniquePoint.className === "cell") point.empty = true;
+			else point.empty = false;
+
+			ctx.beginPath();
+			ctx.moveTo(elRect.left + elRect.width * .5, elRect.top);
+			ctx.lineTo(point.x, point.y);
+	
+			if( point.empty ) ctx.strokeStyle = "rgb(22, 128, 22)";
+			else ctx.strokeStyle = "rgb(139, 32, 32)";
+	
+			ctx.lineWidth = 2;
+			ctx.stroke();
+		}
 	}
 }
 function makeADeer(){
@@ -390,10 +413,10 @@ function makeADeer(){
 	 it[1].style = "left: calc(50% - 322px); top: calc(50% - 182px)";	// B
 	 it[2].style = "left: calc(50% + 192px); top: calc(50% - 300px)";	// C
 	 it[3].style = "left: calc(50% + 242px); top: calc(50% - 180px)";	// D
-	 it[4].style = "left: calc(50% + 178px); top: calc(50% - 150px)";	// Palo
+	 it[4].style = "left: calc(50% + 178px); top: calc(50% - 150px)";	// Casco
 	 it[5].style = "left: calc(50% + 222px); top: calc(50% - 280px)";	// Chancletas
-	 it[6].style = "left: calc(50% + 295px); top: calc(50% - 340px)"; 	// Casco
-	 it[7].style = "left: calc(50% + 255px); top: calc(50% - 260px)"; 	// Motosierra
+	 it[6].style = "left: calc(50% + 295px); top: calc(50% - 340px)"; 	// Motosierra
+	 it[7].style = "left: calc(50% + 255px); top: calc(50% - 260px)"; 	// Palo
 	 it[8].style = "left: calc(50% - 402px); top: calc(50% - 282px)";	// E
 	 it[9].style = "left: calc(50% - 301px); top: calc(50% - 192px)";	// F
 	it[10].style = "left: calc(50% - 322px); top: calc(50% - 300px)";	// Recurso
@@ -408,10 +431,10 @@ function makeARobot(){
 	 it[1].style = "left: calc(50% + 192px); top: calc(50% - 310px)";	// B
 	 it[2].style = "left: calc(50% + 192px); top: calc(50% - 250px)";	// C
 	 it[3].style = "left: calc(50% + 192px); top: calc(50% - 190px)";	// D
-	 it[4].style = "left: calc(50% + 192px); top: calc(50% - 130px)";	// Palo
+	 it[4].style = "left: calc(50% + 192px); top: calc(50% - 130px)";	// Casco
 	 it[5].style = "left: calc(50% + 192px); top: calc(50% - 130px)";	// Chancletas
-	 it[6].style = "left: calc(50% + 192px); top: calc(50% - 70px)"; 	// Casco
-	 it[7].style = "left: calc(50% + 192px); top: calc(50% - 70px)"; 	// Motosierra
+	 it[6].style = "left: calc(50% + 192px); top: calc(50% - 70px)"; 	// Motosierra
+	 it[7].style = "left: calc(50% + 192px); top: calc(50% - 70px)"; 	// Palo
 	 it[8].style = "left: calc(50% - 242px); top: calc(50% - 370px)";	// E
 	 it[9].style = "left: calc(50% - 242px); top: calc(50% - 310px)";	// F
 	it[10].style = "left: calc(50% - 292px); top: calc(50% - 130px)";	// Recurso
@@ -426,10 +449,10 @@ function makeASpider(){
 	 it[1].style = "left: calc(50% + 62px); top: calc(50% + 202px)";	// B
 	 it[2].style = "left: calc(50% - 82px); top: calc(50% + 195px)";	// C
 	 it[3].style = "left: calc(50% + 302px); top: calc(50% + 190px)";	// D
-	 it[4].style = "left: calc(50% + 242px); top: calc(50% + 160px)";	// Palo
+	 it[4].style = "left: calc(50% + 242px); top: calc(50% + 160px)";	// Casco
 	 it[5].style = "left: calc(50% - 322px); top: calc(50% + 140px)";	// Chancletas
-	 it[6].style = "left: calc(50% - 285px); top: calc(50% + 90px)"; 	// Casco
-	 it[7].style = "left: calc(50% + 190px); top: calc(50% + 80px)"; 	// Motosierra
+	 it[6].style = "left: calc(50% - 285px); top: calc(50% + 90px)"; 	// Motosierra
+	 it[7].style = "left: calc(50% + 190px); top: calc(50% + 80px)"; 	// Palo
 	 it[8].style = "left: calc(50% + 52px); top: calc(50% + 182px)";	// E
 	 it[9].style = "left: calc(50% - 92px); top: calc(50% + 182px)";	// F
 	it[10].style = "left: calc(50% + 122px); top: calc(50% + 155px)";	// Recurso
@@ -444,10 +467,10 @@ function makeAMess(){
 	 it[1].style = `left: calc(50% + 192px); top: calc(50% - 310px)`;	// B
 	 it[2].style = `left: calc(50% - 192px); top: calc(50% + 222px)`;	// C
 	 it[3].style = `left: calc(50% + 380px); top: calc(50% - 32px)`;	// D
-	 it[4].style = `left: calc(50% - 312px); top: calc(50% + 32px)`;	// Palo
+	 it[4].style = `left: calc(50% - 312px); top: calc(50% + 32px)`;	// Casco
 	 it[5].style = `left: calc(50% - 332px); top: calc(50% - 142px)`;	// Chancletas
-	 it[6].style = `left: calc(50% + 192px); top: calc(50% + 192px)`; 	// Casco
-	 it[7].style = `left: calc(50% - 82px); top: calc(50% - 322px)`; 	// Motosierra
+	 it[6].style = `left: calc(50% + 192px); top: calc(50% + 192px)`; 	// Motosierra
+	 it[7].style = `left: calc(50% - 82px); top: calc(50% - 322px)`; 	// Palo
 	 it[8].style = `left: calc(50% - 362px); top: calc(50% + 122px)`;	// E
 	 it[9].style = `left: calc(50% - 292px); top: calc(50% - 292px)`;	// F
 	it[10].style = `left: calc(50% - 392px); top: calc(50% - 62px)`;	// Recurso
@@ -458,19 +481,19 @@ function makeAMess(){
 }
 function makeItNeat(){
 	const it = document.querySelectorAll(".item");
-	it[0].style = `left: calc(50% + 320px); top: calc(50% - 220px)`;	// A
-	it[1].style = `left: calc(50% + 192px); top: calc(50% - 310px)`;	// B
-	it[2].style = `left: calc(50% - 192px); top: calc(50% + 222px)`;	// C
-	it[3].style = `left: calc(50% + 380px); top: calc(50% - 32px)`;	// D
-	it[4].style = `left: calc(50% - 312px); top: calc(50% + 32px)`;	// Palo
-	it[5].style = `left: calc(50% - 332px); top: calc(50% - 142px)`;	// Chancletas
-	it[6].style = `left: calc(50% + 192px); top: calc(50% + 192px)`; 	// Casco
-	it[7].style = `left: calc(50% - 82px); top: calc(50% - 322px)`; 	// Motosierra
-	it[8].style = `left: calc(50% - 362px); top: calc(50% + 122px)`;	// E
-	it[9].style = `left: calc(50% - 292px); top: calc(50% - 292px)`;	// F
-   it[10].style = `left: calc(50% - 392px); top: calc(50% - 62px)`;	// Recurso
-   it[11].style = `left: calc(50% + 222px); top: calc(50% - 132px)`;	// Recurso 2
-   it[12].style = `left: calc(50% + 282px); top: calc(50% + 112px)`;	// G
-   it[13].style = `left: calc(50% - 422px); top: calc(50% - 192px)`;	// H
-   it[14].style = `left: calc(50% - 310px); top: calc(50% + 252px)`;	// Manzanas
+	it[0].style = `left: calc(50% - 161px); top: calc(50% - 136px)`;	// A
+	it[1].style = `left: calc(50% - 111px); top: calc(50% - 136px)`;	// B
+	it[2].style = `left: calc(50% - 61px); top: calc(50% - 136px)`;		// C
+	it[3].style = `left: calc(50% - 11px); top: calc(50% - 136px)`;		// D
+	it[4].style = `left: calc(50% - 161px); top: calc(50% - 86px)`;		// Casco
+	it[5].style = `left: calc(50% - 61px); top: calc(50% - 86px)`;		// Chancletas
+	it[6].style = `left: calc(50% - 161px); top: calc(50% - 36px)`; 	// Motosierra
+	it[7].style = `left: calc(50% - 61px); top: calc(50% - 36px)`; 		// Palo
+	it[8].style = `left: calc(50% + 61px); top: calc(50% - 136px)`;		// E
+	it[9].style = `left: calc(50% + 111px); top: calc(50% - 136px)`;	// F
+   it[10].style = `left: calc(50% + 61px); top: calc(50% - 86px)`;		// Recurso
+   it[11].style = `left: calc(50% + 61px); top: calc(50% - 36px)`;		// Recurso 2
+   it[12].style = `left: calc(50% - 100px); top: calc(50% + 123px)`;	// G
+   it[13].style = `left: calc(50% - 50px); top: calc(50% + 123px)`;		// H
+   it[14].style = `left: calc(50% - 0px); top: calc(50% + 123px)`;		// Manzanas
 }
