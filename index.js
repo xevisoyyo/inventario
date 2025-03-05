@@ -87,8 +87,6 @@ function createItem({name, width, height, type, x, y}) {
 		type,
 		element: document.createElement("div"),
 		rect: null,
-		x,
-		y,
 	};
 	// crea el item (elemento) ^
 	item.element.classList.add("item", `item-${item.width}x${item.height}`);
@@ -180,7 +178,6 @@ function setPoints(){
 		}
 	}
 }
-
 function onItemMove(event) {
 	selectedItem.x = event.clientX - mouseOffset.x;
 	selectedItem.y = event.clientY - mouseOffset.y;
@@ -193,7 +190,7 @@ function onItemMove(event) {
 	
 	for(let i = 0; i < points.length; i++){
 		ctx.beginPath();
-		ctx.moveTo(selectedItem.x + selectedItem.rect.width / 2, selectedItem.y + selectedItem.rect.height / 2);
+		ctx.moveTo(selectedItem.x + selectedItem.rect.width * .5, selectedItem.y + selectedItem.rect.height * .5);
 		ctx.lineTo(points[i].x, points[i].y);
 
 		if( points[i].empty ) ctx.strokeStyle = "rgb(22, 128, 22)";
@@ -274,15 +271,15 @@ function onItemDrop() {
 				distance = Math.sqrt(Math.pow(points[i].x - itemRect.width/2 - itemRect.x, 2) + Math.pow(points[i].y - itemRect.height/2 - itemRect.y, 2));
 				if(distance < shorterDistance) {
 					shorterDistance = distance;
-					shorterPoint.x = points[i].x - selectedItem.width * squareHalf + 1;
-					shorterPoint.y = points[i].y - selectedItem.height * squareHalf + 1;
+					shorterPoint.x = window.innerWidth / 2 - (points[i].x - selectedItem.width * squareHalf + 1);
+					shorterPoint.y = window.innerHeight / 2 - (points[i].y - selectedItem.height * squareHalf + 1);
 				}
 			}
 		}
 		// si hay distancia es porque hay como minímo un espacio para ese item
 		if(distance){
-			selectedItem.element.style.left = `${shorterPoint.x}px`;
-			selectedItem.element.style.top = `${shorterPoint.y}px`;
+			selectedItem.element.style.left = `calc(50% - ${shorterPoint.x}px)`;
+			selectedItem.element.style.top = `calc(50% - ${shorterPoint.y}px)`;
 		}
 		// si no hay distancia es porque no hay ningún espacio para ese item (se devuelve al origen)
 		else {
@@ -316,12 +313,10 @@ function removeActiveGrid() {
 }
 
 function isPointEmpty(pointX, pointY){
-	let firstElement = null;
 	const elements = document.elementsFromPoint(pointX, pointY);
 	const filteredElements = elements.filter(elemento => elemento !== selectedItem.element);
 
 	if (filteredElements.length > 0) {
-		firstElement = filteredElements[0]; // Obtener el elemento superior
 
 		if( // si el punto obtenido no devuelve un elemento cell, significa que está ocupado o fuera del grid (puede ser fuera ya que con los items de más de 1x1 compruebo los puntos adyacentes también)
 			(selectedItem.width === 1 && document.elementFromPoint(pointX, pointY).className === "cell") ||
@@ -347,6 +342,62 @@ function isPointEmpty(pointX, pointY){
 // jugando un poco con los items
 createMenu();
 
+function createMenu(){
+	const menu = document.getElementById("menu");
+	menu.addEventListener("click", (e)=>{
+		const el = e.target;
+		switch (el.id){
+			case "random":
+				makeAMess();
+				break;
+			case "deer":
+				makeADeer();
+				break;
+			case "robot":
+				makeARobot();
+				break;
+			case "spider":
+				makeASpider();
+				break;
+			case "switch-rays":
+				switchRays(el);
+				break;
+		}
+	})
+}
+function getRandom(min, max){
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function switchRays(el){
+	if(showRays){
+		showRays = false;
+		el.textContent = "Activar rayos";
+		el.classList.remove("show");
+	}
+	else{
+		showRays = true;
+		el.textContent = "Desctivar rayos";
+		el.classList.add("show");
+	}
+}
+function makeADeer(){
+	const it = document.querySelectorAll(".item");
+	 it[0].style = "left: calc(50% - 252px); top: calc(50% - 320px)";	// A
+	 it[1].style = "left: calc(50% - 322px); top: calc(50% - 182px)";	// B
+	 it[2].style = "left: calc(50% + 192px); top: calc(50% - 300px)";	// C
+	 it[3].style = "left: calc(50% + 242px); top: calc(50% - 180px)";	// D
+	 it[4].style = "left: calc(50% + 178px); top: calc(50% - 150px)";	// Palo
+	 it[5].style = "left: calc(50% + 222px); top: calc(50% - 280px)";	// Chancletas
+	 it[6].style = "left: calc(50% + 295px); top: calc(50% - 340px)"; 	// Casco
+	 it[7].style = "left: calc(50% + 255px); top: calc(50% - 260px)"; 	// Motosierra
+	 it[8].style = "left: calc(50% - 402px); top: calc(50% - 282px)";	// E
+	 it[9].style = "left: calc(50% - 301px); top: calc(50% - 192px)";	// F
+	it[10].style = "left: calc(50% - 322px); top: calc(50% - 300px)";	// Recurso
+	it[11].style = "left: calc(50% - 371px); top: calc(50% - 275px)";	// Recurso 2
+	it[12].style = "left: calc(50% + 252px); top: calc(50% - 170px)";	// G
+	it[13].style = "left: calc(50% - 392px); top: calc(50% - 309px)";	// H
+	it[14].style = "left: calc(50% - 276px); top: calc(50% - 170px)";	// Manzanas
+}
 function makeARobot(){
 	const it = document.querySelectorAll(".item");
 	 it[0].style = "left: calc(50% + 192px); top: calc(50% - 370px)";	// A
@@ -383,24 +434,6 @@ function makeASpider(){
 	it[13].style = "left: calc(50% - 322px); top: calc(50% + 160px)";	// H
 	it[14].style = "left: calc(50% + 162px); top: calc(50% + 190px)";	// Manzanas
 }
-function makeADeer(){
-	const it = document.querySelectorAll(".item");
-	 it[0].style = "left: calc(50% - 252px); top: calc(50% - 320px)";	// A
-	 it[1].style = "left: calc(50% - 322px); top: calc(50% - 182px)";	// B
-	 it[2].style = "left: calc(50% + 192px); top: calc(50% - 300px)";	// C
-	 it[3].style = "left: calc(50% + 242px); top: calc(50% - 180px)";	// D
-	 it[4].style = "left: calc(50% + 178px); top: calc(50% - 150px)";	// Palo
-	 it[5].style = "left: calc(50% + 222px); top: calc(50% - 280px)";	// Chancletas
-	 it[6].style = "left: calc(50% + 295px); top: calc(50% - 340px)"; 	// Casco
-	 it[7].style = "left: calc(50% + 255px); top: calc(50% - 260px)"; 	// Motosierra
-	 it[8].style = "left: calc(50% - 402px); top: calc(50% - 282px)";	// E
-	 it[9].style = "left: calc(50% - 301px); top: calc(50% - 192px)";	// F
-	it[10].style = "left: calc(50% - 322px); top: calc(50% - 300px)";	// Recurso
-	it[11].style = "left: calc(50% - 371px); top: calc(50% - 275px)";	// Recurso 2
-	it[12].style = "left: calc(50% + 252px); top: calc(50% - 170px)";	// G
-	it[13].style = "left: calc(50% - 392px); top: calc(50% - 309px)";	// H
-	it[14].style = "left: calc(50% - 276px); top: calc(50% - 170px)";	// Manzanas
-}
 function makeAMess(){
 	const it = document.querySelectorAll(".item");
 	 it[0].style = `left: calc(50% + 320px); top: calc(50% - 220px)`;	// A
@@ -418,42 +451,4 @@ function makeAMess(){
 	it[12].style = `left: calc(50% + 282px); top: calc(50% + 112px)`;	// G
 	it[13].style = `left: calc(50% - 422px); top: calc(50% - 192px)`;	// H
 	it[14].style = `left: calc(50% - 310px); top: calc(50% + 252px)`;	// Manzanas
-}
-function switchRays(el){
-	if(showRays){
-		showRays = false;
-		el.textContent = "Activar rayos";
-		el.classList.remove("show");
-	}
-	else{
-		showRays = true;
-		el.textContent = "Desctivar rayos";
-		el.classList.add("show");
-	}
-}
-function getRandom(min, max){
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-function createMenu(){
-	const menu = document.getElementById("menu");
-	menu.addEventListener("click", (e)=>{
-		const el = e.target;
-		switch (el.id){
-			case "random":
-				makeAMess();
-				break;
-			case "deer":
-				makeADeer();
-				break;
-			case "robot":
-				makeARobot();
-				break;
-			case "spider":
-				makeASpider();
-				break;
-			case "switch-rays":
-				switchRays(el);
-				break;
-		}
-	})
 }

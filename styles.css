@@ -139,6 +139,7 @@ div{
   z-index: 2;
   pointer-events: none;
 }
+
 .menu{
   position: absolute;
   bottom: 20px;
