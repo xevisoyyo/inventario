@@ -62,7 +62,7 @@ function createGridsAndItems(){
 	createItem({type: "consumables",	name: "H", 			width: 1, height: 1});
 	createItem({type: "consumables",	name: "Manzanas", 	width: 2, height: 1});
 
-	makeItNeat();
+	makeAMess();
 }
 function createGrid(type, nomberOfCells) {
 	const grid = getGrid(type);
@@ -74,7 +74,6 @@ function createGrid(type, nomberOfCells) {
 		cellElement.setAttribute("data-id", i + 1);
 		grid.element.appendChild(cellElement);
 	}
-	grid.rect = grid.element.getBoundingClientRect();
 }
 function createItem({name, width, height, type, x, y}) {
 	// crea el item (objeto)
@@ -105,6 +104,7 @@ function onItemGrab(event) {
 	selectedItem.rect = selectedItem.element.getBoundingClientRect();
 
 	selectedGrid = getGrid(selectedItem.type);
+	selectedGrid.rect = selectedGrid.element.getBoundingClientRect();
 
 	setPoints();
 
@@ -381,8 +381,9 @@ function switchRays(el){
 		el.classList.add("show");
 
 		// activo todos los rayos a modo de ejemplo de manera chusquera
-		let gridRectX = con.rect.x;
-		let gridRectY = con.rect.y;
+		let consumableRect = con.element.getBoundingClientRect();
+		let gridRectX = consumableRect.x;
+		let gridRectY = consumableRect.y;
 	
 		let gridCells = con.cols * con.rows;
 		let gridCols = con.cols;
