@@ -352,6 +352,9 @@ function makeAnAction(e){
 		case "deer":
 			makeADeer();
 			break;
+		case "greeting":
+			makeAGreeting();
+			break;
 		case "robot":
 			makeARobot();
 			break;
@@ -368,6 +371,78 @@ function makeAnAction(e){
 }
 function getRandom(min, max){
 	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function makeADeer(){
+	const it = document.querySelectorAll(".item");
+	 it[0].style = "left: calc(50% - 252px); top: calc(50% - 320px)";	// A
+	 it[1].style = "left: calc(50% - 322px); top: calc(50% - 182px)";	// B
+	 it[2].style = "left: calc(50% + 192px); top: calc(50% - 300px)";	// C
+	 it[3].style = "left: calc(50% + 242px); top: calc(50% - 180px)";	// D
+	 it[4].style = "left: calc(50% + 178px); top: calc(50% - 150px)";	// Casco
+	 it[5].style = "left: calc(50% + 222px); top: calc(50% - 280px)";	// Chancletas
+	 it[6].style = "left: calc(50% + 295px); top: calc(50% - 340px)"; 	// Motosierra
+	 it[7].style = "left: calc(50% + 255px); top: calc(50% - 260px)"; 	// Palo
+	 it[8].style = "left: calc(50% - 402px); top: calc(50% - 282px)";	// E
+	 it[9].style = "left: calc(50% - 301px); top: calc(50% - 192px)";	// F
+	it[10].style = "left: calc(50% - 322px); top: calc(50% - 300px)";	// Recurso
+	it[11].style = "left: calc(50% - 371px); top: calc(50% - 275px)";	// Recurso 2
+	it[12].style = "left: calc(50% + 252px); top: calc(50% - 170px)";	// G
+	it[13].style = "left: calc(50% - 392px); top: calc(50% - 309px)";	// H
+	it[14].style = "left: calc(50% - 276px); top: calc(50% - 170px)";	// Manzanas
+}
+function makeAGreeting(){
+	const it = document.querySelectorAll(".item");
+	 it[0].style = "left: calc(50% - 382px); top: calc(50% - 80px)";	// A
+	 it[1].style = "left: calc(50% - 390px); top: calc(50% - 120px)";	// B
+	 it[2].style = "left: calc(50% - 370px); top: calc(50% - 130px)";	// C
+	 it[3].style = "left: calc(50% - 250px); top: calc(50% - 120px)";	// D
+	 it[4].style = "left: calc(50% - 320px); top: calc(50% - 10px)";	// Casco
+	 it[5].style = "left: calc(50% - 315px); top: calc(50% + 20px)";	// Chancletas
+	 it[6].style = "left: calc(50% - 310px); top: calc(50% - 100px)"; 	// Motosierra
+	 it[7].style = "left: calc(50% - 360px); top: calc(50% - 90px)"; 	// Palo
+	 it[8].style = "left: calc(50% - 320px); top: calc(50% - 264px)";	// E
+	 it[9].style = "left: calc(50% - 281px); top: calc(50% - 132px)";	// F
+	it[10].style = "left: calc(50% - 340px); top: calc(50% - 115px)";	// Recurso
+	it[11].style = "left: calc(50% - 310px); top: calc(50% + 50px)";	// Recurso 2
+	it[12].style = "left: calc(50% - 318px); top: calc(50% - 160px)";	// G
+	it[13].style = "left: calc(50% - 320px); top: calc(50% - 212px)";	// H
+	it[14].style = "left: calc(50% - 304px); top: calc(50% + 123px)";	// Manzanas
+}
+function makeARobot(){
+	const it = document.querySelectorAll(".item");
+	 it[0].style = "left: calc(50% + 192px); top: calc(50% - 370px)";	// A
+	 it[1].style = "left: calc(50% + 192px); top: calc(50% - 310px)";	// B
+	 it[2].style = "left: calc(50% + 192px); top: calc(50% - 250px)";	// C
+	 it[3].style = "left: calc(50% + 192px); top: calc(50% - 190px)";	// D
+	 it[4].style = "left: calc(50% + 192px); top: calc(50% - 130px)";	// Casco
+	 it[5].style = "left: calc(50% + 192px); top: calc(50% - 130px)";	// Chancletas
+	 it[6].style = "left: calc(50% + 192px); top: calc(50% - 70px)"; 	// Motosierra
+	 it[7].style = "left: calc(50% + 192px); top: calc(50% - 70px)"; 	// Palo
+	 it[8].style = "left: calc(50% - 242px); top: calc(50% - 370px)";	// E
+	 it[9].style = "left: calc(50% - 242px); top: calc(50% - 310px)";	// F
+	it[10].style = "left: calc(50% - 292px); top: calc(50% - 130px)";	// Recurso
+	it[11].style = "left: calc(50% - 292px); top: calc(50% - 70px)";	// Recurso 2
+	it[12].style = "left: calc(50% - 242px); top: calc(50% - 250px)";	// G
+	it[13].style = "left: calc(50% - 242px); top: calc(50% - 190px)";	// H
+	it[14].style = "left: calc(50% - 292px); top: calc(50% - 130px)";	// Manzanas
+}
+function makeASpider(){
+	const it = document.querySelectorAll(".item");
+	 it[0].style = "left: calc(50% - 242px); top: calc(50% + 210px)";	// A
+	 it[1].style = "left: calc(50% + 62px); top: calc(50% + 202px)";	// B
+	 it[2].style = "left: calc(50% - 82px); top: calc(50% + 195px)";	// C
+	 it[3].style = "left: calc(50% + 302px); top: calc(50% + 190px)";	// D
+	 it[4].style = "left: calc(50% + 242px); top: calc(50% + 160px)";	// Casco
+	 it[5].style = "left: calc(50% - 322px); top: calc(50% + 140px)";	// Chancletas
+	 it[6].style = "left: calc(50% - 285px); top: calc(50% + 90px)"; 	// Motosierra
+	 it[7].style = "left: calc(50% + 190px); top: calc(50% + 80px)"; 	// Palo
+	 it[8].style = "left: calc(50% + 52px); top: calc(50% + 182px)";	// E
+	 it[9].style = "left: calc(50% - 92px); top: calc(50% + 182px)";	// F
+	it[10].style = "left: calc(50% + 122px); top: calc(50% + 155px)";	// Recurso
+	it[11].style = "left: calc(50% - 232px); top: calc(50% + 140px)";	// Recurso 2
+	it[12].style = "left: calc(50% - 262px); top: calc(50% + 250px)";	// G
+	it[13].style = "left: calc(50% - 322px); top: calc(50% + 160px)";	// H
+	it[14].style = "left: calc(50% + 162px); top: calc(50% + 190px)";	// Manzanas
 }
 function switchRays(el){
 	if(showRays){
@@ -407,60 +482,6 @@ function switchRays(el){
 			ctx.stroke();
 		}
 	}
-}
-function makeADeer(){
-	const it = document.querySelectorAll(".item");
-	 it[0].style = "left: calc(50% - 252px); top: calc(50% - 320px)";	// A
-	 it[1].style = "left: calc(50% - 322px); top: calc(50% - 182px)";	// B
-	 it[2].style = "left: calc(50% + 192px); top: calc(50% - 300px)";	// C
-	 it[3].style = "left: calc(50% + 242px); top: calc(50% - 180px)";	// D
-	 it[4].style = "left: calc(50% + 178px); top: calc(50% - 150px)";	// Casco
-	 it[5].style = "left: calc(50% + 222px); top: calc(50% - 280px)";	// Chancletas
-	 it[6].style = "left: calc(50% + 295px); top: calc(50% - 340px)"; 	// Motosierra
-	 it[7].style = "left: calc(50% + 255px); top: calc(50% - 260px)"; 	// Palo
-	 it[8].style = "left: calc(50% - 402px); top: calc(50% - 282px)";	// E
-	 it[9].style = "left: calc(50% - 301px); top: calc(50% - 192px)";	// F
-	it[10].style = "left: calc(50% - 322px); top: calc(50% - 300px)";	// Recurso
-	it[11].style = "left: calc(50% - 371px); top: calc(50% - 275px)";	// Recurso 2
-	it[12].style = "left: calc(50% + 252px); top: calc(50% - 170px)";	// G
-	it[13].style = "left: calc(50% - 392px); top: calc(50% - 309px)";	// H
-	it[14].style = "left: calc(50% - 276px); top: calc(50% - 170px)";	// Manzanas
-}
-function makeARobot(){
-	const it = document.querySelectorAll(".item");
-	 it[0].style = "left: calc(50% + 192px); top: calc(50% - 370px)";	// A
-	 it[1].style = "left: calc(50% + 192px); top: calc(50% - 310px)";	// B
-	 it[2].style = "left: calc(50% + 192px); top: calc(50% - 250px)";	// C
-	 it[3].style = "left: calc(50% + 192px); top: calc(50% - 190px)";	// D
-	 it[4].style = "left: calc(50% + 192px); top: calc(50% - 130px)";	// Casco
-	 it[5].style = "left: calc(50% + 192px); top: calc(50% - 130px)";	// Chancletas
-	 it[6].style = "left: calc(50% + 192px); top: calc(50% - 70px)"; 	// Motosierra
-	 it[7].style = "left: calc(50% + 192px); top: calc(50% - 70px)"; 	// Palo
-	 it[8].style = "left: calc(50% - 242px); top: calc(50% - 370px)";	// E
-	 it[9].style = "left: calc(50% - 242px); top: calc(50% - 310px)";	// F
-	it[10].style = "left: calc(50% - 292px); top: calc(50% - 130px)";	// Recurso
-	it[11].style = "left: calc(50% - 292px); top: calc(50% - 70px)";	// Recurso 2
-	it[12].style = "left: calc(50% - 242px); top: calc(50% - 250px)";	// G
-	it[13].style = "left: calc(50% - 242px); top: calc(50% - 190px)";	// H
-	it[14].style = "left: calc(50% - 292px); top: calc(50% - 130px)";	// Manzanas
-}
-function makeASpider(){
-	const it = document.querySelectorAll(".item");
-	 it[0].style = "left: calc(50% - 242px); top: calc(50% + 210px)";	// A
-	 it[1].style = "left: calc(50% + 62px); top: calc(50% + 202px)";	// B
-	 it[2].style = "left: calc(50% - 82px); top: calc(50% + 195px)";	// C
-	 it[3].style = "left: calc(50% + 302px); top: calc(50% + 190px)";	// D
-	 it[4].style = "left: calc(50% + 242px); top: calc(50% + 160px)";	// Casco
-	 it[5].style = "left: calc(50% - 322px); top: calc(50% + 140px)";	// Chancletas
-	 it[6].style = "left: calc(50% - 285px); top: calc(50% + 90px)"; 	// Motosierra
-	 it[7].style = "left: calc(50% + 190px); top: calc(50% + 80px)"; 	// Palo
-	 it[8].style = "left: calc(50% + 52px); top: calc(50% + 182px)";	// E
-	 it[9].style = "left: calc(50% - 92px); top: calc(50% + 182px)";	// F
-	it[10].style = "left: calc(50% + 122px); top: calc(50% + 155px)";	// Recurso
-	it[11].style = "left: calc(50% - 232px); top: calc(50% + 140px)";	// Recurso 2
-	it[12].style = "left: calc(50% - 262px); top: calc(50% + 250px)";	// G
-	it[13].style = "left: calc(50% - 322px); top: calc(50% + 160px)";	// H
-	it[14].style = "left: calc(50% + 162px); top: calc(50% + 190px)";	// Manzanas
 }
 function makeAMess(){
 	const it = document.querySelectorAll(".item");
