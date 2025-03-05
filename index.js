@@ -62,7 +62,7 @@ function createGridsAndItems(){
 	createItem({type: "consumables",	name: "H", 			width: 1, height: 1});
 	createItem({type: "consumables",	name: "Manzanas", 	width: 2, height: 1});
 
-	makeAMess();
+	makeItNeat();
 }
 function createGrid(type, nomberOfCells) {
 	const grid = getGrid(type);
@@ -373,76 +373,84 @@ function getRandom(min, max){
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 function makeADeer(){
-	const it = document.querySelectorAll(".item");
-	 it[0].style = "left: calc(50% - 252px); top: calc(50% - 320px)";	// A
-	 it[1].style = "left: calc(50% - 322px); top: calc(50% - 182px)";	// B
-	 it[2].style = "left: calc(50% + 192px); top: calc(50% - 300px)";	// C
-	 it[3].style = "left: calc(50% + 242px); top: calc(50% - 180px)";	// D
-	 it[4].style = "left: calc(50% + 178px); top: calc(50% - 150px)";	// Casco
-	 it[5].style = "left: calc(50% + 222px); top: calc(50% - 280px)";	// Chancletas
-	 it[6].style = "left: calc(50% + 295px); top: calc(50% - 340px)"; 	// Motosierra
-	 it[7].style = "left: calc(50% + 255px); top: calc(50% - 260px)"; 	// Palo
-	 it[8].style = "left: calc(50% - 402px); top: calc(50% - 282px)";	// E
-	 it[9].style = "left: calc(50% - 301px); top: calc(50% - 192px)";	// F
-	it[10].style = "left: calc(50% - 322px); top: calc(50% - 300px)";	// Recurso
-	it[11].style = "left: calc(50% - 371px); top: calc(50% - 275px)";	// Recurso 2
-	it[12].style = "left: calc(50% + 252px); top: calc(50% - 170px)";	// G
-	it[13].style = "left: calc(50% - 392px); top: calc(50% - 309px)";	// H
-	it[14].style = "left: calc(50% - 276px); top: calc(50% - 170px)";	// Manzanas
+	const positions = [
+		{ x: -252,	y: -320 },	// A
+		{ x: -322,	y: -182 },	// B
+		{ x: 192,	y: -300 },	// C
+		{ x: 242,	y: -180 },	// D
+		{ x: 178,	y: -150 },	// Casco
+		{ x: 222,	y: -280 },	// Chancletas
+		{ x: 295,	y: -340 },	// Motosierra
+		{ x: 255,	y: -260 },	// Palo
+		{ x: -402,	y: -282 },	// E
+		{ x: -301,	y: -192 },	// F
+		{ x: -322,	y: -300 },	// Recurso
+		{ x: -371,	y: -275 },	// Recurso 2
+		{ x: 252,	y: -170 },	// G
+		{ x: -392,	y: -309 },	// H
+		{ x: -276,	y: -170 },	// Manzanas
+	]
+	makeTheOrder(positions);
 }
 function makeAGreeting(){
-	const it = document.querySelectorAll(".item");
-	 it[0].style = "left: calc(50% - 382px); top: calc(50% - 80px)";	// A
-	 it[1].style = "left: calc(50% - 390px); top: calc(50% - 120px)";	// B
-	 it[2].style = "left: calc(50% - 370px); top: calc(50% - 130px)";	// C
-	 it[3].style = "left: calc(50% - 250px); top: calc(50% - 120px)";	// D
-	 it[4].style = "left: calc(50% - 320px); top: calc(50% - 10px)";	// Casco
-	 it[5].style = "left: calc(50% - 315px); top: calc(50% + 20px)";	// Chancletas
-	 it[6].style = "left: calc(50% - 310px); top: calc(50% - 100px)"; 	// Motosierra
-	 it[7].style = "left: calc(50% - 360px); top: calc(50% - 90px)"; 	// Palo
-	 it[8].style = "left: calc(50% - 320px); top: calc(50% - 264px)";	// E
-	 it[9].style = "left: calc(50% - 281px); top: calc(50% - 132px)";	// F
-	it[10].style = "left: calc(50% - 340px); top: calc(50% - 115px)";	// Recurso
-	it[11].style = "left: calc(50% - 310px); top: calc(50% + 50px)";	// Recurso 2
-	it[12].style = "left: calc(50% - 318px); top: calc(50% - 160px)";	// G
-	it[13].style = "left: calc(50% - 320px); top: calc(50% - 212px)";	// H
-	it[14].style = "left: calc(50% - 304px); top: calc(50% + 123px)";	// Manzanas
+	const positions = [
+		{ x: -382,	y: -80 	},	// A
+		{ x: -390,	y: -120 },	// B
+		{ x: -370,	y: -130 },	// C
+		{ x: -250,	y: -120 },	// D
+		{ x: -320,	y: -10  },	// Casco
+		{ x: -315,	y: 20	},	// Chancletas
+		{ x: -310,	y: -100 },	// Motosierra
+		{ x: -360,	y: -90  },	// Palo
+		{ x: -320,	y: -264 },	// E
+		{ x: -281,	y: -132 },	// F
+		{ x: -340,	y: -115 },	// Recurso
+		{ x: -310,	y: 50   },	// Recurso 2
+		{ x: -318,	y: -160 },	// G
+		{ x: -320,	y: -212 },	// H
+		{ x: -304,	y: 123	},	// Manzanas
+	]
+	makeTheOrder(positions);
 }
 function makeARobot(){
-	const it = document.querySelectorAll(".item");
-	 it[0].style = "left: calc(50% + 192px); top: calc(50% - 370px)";	// A
-	 it[1].style = "left: calc(50% + 192px); top: calc(50% - 310px)";	// B
-	 it[2].style = "left: calc(50% + 192px); top: calc(50% - 250px)";	// C
-	 it[3].style = "left: calc(50% + 192px); top: calc(50% - 190px)";	// D
-	 it[4].style = "left: calc(50% + 192px); top: calc(50% - 130px)";	// Casco
-	 it[5].style = "left: calc(50% + 192px); top: calc(50% - 130px)";	// Chancletas
-	 it[6].style = "left: calc(50% + 192px); top: calc(50% - 70px)"; 	// Motosierra
-	 it[7].style = "left: calc(50% + 192px); top: calc(50% - 70px)"; 	// Palo
-	 it[8].style = "left: calc(50% - 242px); top: calc(50% - 370px)";	// E
-	 it[9].style = "left: calc(50% - 242px); top: calc(50% - 310px)";	// F
-	it[10].style = "left: calc(50% - 292px); top: calc(50% - 130px)";	// Recurso
-	it[11].style = "left: calc(50% - 292px); top: calc(50% - 70px)";	// Recurso 2
-	it[12].style = "left: calc(50% - 242px); top: calc(50% - 250px)";	// G
-	it[13].style = "left: calc(50% - 242px); top: calc(50% - 190px)";	// H
-	it[14].style = "left: calc(50% - 292px); top: calc(50% - 130px)";	// Manzanas
+	const positions = [
+		{ x: 192,	y: -370 },	// A
+		{ x: 192,	y: -310 },	// B
+		{ x: 192,	y: -250 },	// C
+		{ x: 192,	y: -190 },	// D
+		{ x: 192,	y: -130 },	// Casco
+		{ x: 192,	y: -130 },	// Chancletas
+		{ x: 192,	y: -70  },	// Motosierra
+		{ x: 192,	y: -70  },	// Palo
+		{ x: -242,	y: -370 },	// E
+		{ x: -242,	y: -310 },	// F
+		{ x: -292,	y: -130 },	// Recurso
+		{ x: -292,	y: -70  },	// Recurso 2
+		{ x: -242,	y: -250 },	// G
+		{ x: -242,	y: -190 },	// H
+		{ x: -292,	y: -130 },	// Manzanas
+	]
+	makeTheOrder(positions);
 }
 function makeASpider(){
-	const it = document.querySelectorAll(".item");
-	 it[0].style = "left: calc(50% - 242px); top: calc(50% + 210px)";	// A
-	 it[1].style = "left: calc(50% + 62px); top: calc(50% + 202px)";	// B
-	 it[2].style = "left: calc(50% - 82px); top: calc(50% + 195px)";	// C
-	 it[3].style = "left: calc(50% + 302px); top: calc(50% + 190px)";	// D
-	 it[4].style = "left: calc(50% + 242px); top: calc(50% + 160px)";	// Casco
-	 it[5].style = "left: calc(50% - 322px); top: calc(50% + 140px)";	// Chancletas
-	 it[6].style = "left: calc(50% - 285px); top: calc(50% + 90px)"; 	// Motosierra
-	 it[7].style = "left: calc(50% + 190px); top: calc(50% + 80px)"; 	// Palo
-	 it[8].style = "left: calc(50% + 52px); top: calc(50% + 182px)";	// E
-	 it[9].style = "left: calc(50% - 92px); top: calc(50% + 182px)";	// F
-	it[10].style = "left: calc(50% + 122px); top: calc(50% + 155px)";	// Recurso
-	it[11].style = "left: calc(50% - 232px); top: calc(50% + 140px)";	// Recurso 2
-	it[12].style = "left: calc(50% - 262px); top: calc(50% + 250px)";	// G
-	it[13].style = "left: calc(50% - 322px); top: calc(50% + 160px)";	// H
-	it[14].style = "left: calc(50% + 162px); top: calc(50% + 190px)";	// Manzanas
+	const positions = [
+		{ x: -242,	y: 210 },	// A
+		{ x: 62,	y: 202 },	// B
+		{ x: -82,	y: 195 },	// C
+		{ x: 302,	y: 190 },	// D
+		{ x: 242,	y: 160 },	// Casco
+		{ x: -322,	y: 140  },	// Chancletas
+		{ x: -285,	y: 90  },	// Motosierra
+		{ x: 190,	y: 80  },	// Palo
+		{ x: 52,	y: 182 },	// E
+		{ x: -92,	y: 182 },	// F
+		{ x: 122,	y: 155  },	// Recurso
+		{ x: -232,	y: 140  },	// Recurso 2
+		{ x: -262,	y: 250 },	// G
+		{ x: -322,	y: 160 },	// H
+		{ x: 162,	y: 190 },	// Manzanas
+	]
+	makeTheOrder(positions);
 }
 function switchRays(el){
 	if(showRays){
@@ -484,38 +492,48 @@ function switchRays(el){
 	}
 }
 function makeAMess(){
-	const it = document.querySelectorAll(".item");
-	 it[0].style = `left: calc(50% + 320px); top: calc(50% - 220px)`;	// A
-	 it[1].style = `left: calc(50% + 192px); top: calc(50% - 310px)`;	// B
-	 it[2].style = `left: calc(50% - 192px); top: calc(50% + 222px)`;	// C
-	 it[3].style = `left: calc(50% + 380px); top: calc(50% - 32px)`;	// D
-	 it[4].style = `left: calc(50% - 312px); top: calc(50% + 32px)`;	// Casco
-	 it[5].style = `left: calc(50% - 332px); top: calc(50% - 142px)`;	// Chancletas
-	 it[6].style = `left: calc(50% + 192px); top: calc(50% + 192px)`; 	// Motosierra
-	 it[7].style = `left: calc(50% - 82px); top: calc(50% - 322px)`; 	// Palo
-	 it[8].style = `left: calc(50% - 362px); top: calc(50% + 122px)`;	// E
-	 it[9].style = `left: calc(50% - 292px); top: calc(50% - 292px)`;	// F
-	it[10].style = `left: calc(50% - 392px); top: calc(50% - 62px)`;	// Recurso
-	it[11].style = `left: calc(50% + 222px); top: calc(50% - 132px)`;	// Recurso 2
-	it[12].style = `left: calc(50% + 282px); top: calc(50% + 112px)`;	// G
-	it[13].style = `left: calc(50% - 422px); top: calc(50% - 192px)`;	// H
-	it[14].style = `left: calc(50% - 310px); top: calc(50% + 252px)`;	// Manzanas
+	const positions = [
+		{ x: 320,	y: -220 },	// A
+		{ x: 192,	y: -310 },	// B
+		{ x: -192,	y: 222 },	// C
+		{ x: 380,	y: -32 },	// D
+		{ x: -312,	y: 32  },	// Casco
+		{ x: -332,	y: -142  },	// Chancletas
+		{ x: 192,	y: 192  },	// Motosierra
+		{ x: -82,	y: -322  },	// Palo
+		{ x: -362,	y: 122 },	// E
+		{ x: -292,	y: -292 },	// F
+		{ x: -392,	y: -62  },	// Recurso
+		{ x: 222,	y: -132  },	// Recurso 2
+		{ x: 282,	y: 112 },	// G
+		{ x: -422,	y: -292 },	// H
+		{ x: -310,	y: 252 },	// Manzanas
+	]
+	makeTheOrder(positions);
 }
 function makeItNeat(){
-	const it = document.querySelectorAll(".item");
-	it[0].style = `left: calc(50% - 161px); top: calc(50% - 136px)`;	// A
-	it[1].style = `left: calc(50% - 111px); top: calc(50% - 136px)`;	// B
-	it[2].style = `left: calc(50% - 61px); top: calc(50% - 136px)`;		// C
-	it[3].style = `left: calc(50% - 11px); top: calc(50% - 136px)`;		// D
-	it[4].style = `left: calc(50% - 161px); top: calc(50% - 86px)`;		// Casco
-	it[5].style = `left: calc(50% - 61px); top: calc(50% - 86px)`;		// Chancletas
-	it[6].style = `left: calc(50% - 161px); top: calc(50% - 36px)`; 	// Motosierra
-	it[7].style = `left: calc(50% - 61px); top: calc(50% - 36px)`; 		// Palo
-	it[8].style = `left: calc(50% + 61px); top: calc(50% - 136px)`;		// E
-	it[9].style = `left: calc(50% + 111px); top: calc(50% - 136px)`;	// F
-   it[10].style = `left: calc(50% + 61px); top: calc(50% - 86px)`;		// Recurso
-   it[11].style = `left: calc(50% + 61px); top: calc(50% - 36px)`;		// Recurso 2
-   it[12].style = `left: calc(50% - 100px); top: calc(50% + 123px)`;	// G
-   it[13].style = `left: calc(50% - 50px); top: calc(50% + 123px)`;		// H
-   it[14].style = `left: calc(50% - 0px); top: calc(50% + 123px)`;		// Manzanas
+	const positions = [
+		{ x: -161,	y: -136 },	// A
+		{ x: -111,	y: -136 },	// B
+		{ x: -61,	y: -136 },	// C
+		{ x: -11,	y: -136 },	// D
+		{ x: -161,	y: -86  },	// Casco
+		{ x: -61,	y: -86  },	// Chancletas
+		{ x: -161,	y: -36  },	// Motosierra
+		{ x: -61,	y: -36  },	// Palo
+		{ x: 61,	y: -136 },	// E
+		{ x: 111,	y: -136 },	// F
+		{ x: 61,	y: -86  },	// Recurso
+		{ x: 61,	y: -36  },	// Recurso 2
+		{ x: -100,	y: 123 },	// G
+		{ x: -50,	y: 123 },	// H
+		{ x: 0,		y: 123 },	// Manzanas
+	]
+	makeTheOrder(positions);
+}
+function makeTheOrder(positions){
+	const itemElement = document.querySelectorAll(".item");
+	for(let i = 0; i < positions.length; i++){
+		itemElement[i].style = `left: calc(50% + ${positions[i].x}px); top: calc(50% + ${positions[i].y}px)`;
+	}
 }
