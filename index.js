@@ -4,14 +4,14 @@ const items = [];
 let selectedGrid = {};
 const grids = {
 	bag : {
-		cols: 4,
-		rows: 4,
+		cols: 8,
+		rows: 2,
 		element: null,
 		rect: null,
 	},
 	res : {
-		cols: 2,
-		rows: 4,
+		cols: 4,
+		rows: 2,
 		element: null,
 		rect: null,
 	},
@@ -44,9 +44,9 @@ let showRays = false;
 createGridsAndItems();
 
 function createGridsAndItems(){
-	createGrid("bag", 16);
-	createGrid("resources", 8);
-	createGrid("consumables", 4);
+	createGrid("bag");
+	createGrid("resources");
+	createGrid("consumables");
 
 	createItem({type: "bag",			name: "A",			width: 1, height: 1});
 	createItem({type: "bag",			name: "B", 			width: 1, height: 1});
@@ -64,13 +64,14 @@ function createGridsAndItems(){
 	createItem({type: "consumables",	name: "H", 			width: 1, height: 1});
 	createItem({type: "consumables",	name: "Manzanas", 	width: 2, height: 1});
 
-	makeItNeat();
+	makeAMess();
 }
-function createGrid(type, nomberOfCells) {
+function createGrid(type) {
 	const grid = getGrid(type);
+	const numberOfCells = grid.cols * grid.rows;
 	grid.element = document.getElementById(`grid-${type}`);
 	
-	for (let i = 0; i < nomberOfCells; i++) {
+	for (let i = 0; i < numberOfCells; i++) {
 		const cellElement = document.createElement("div");
 		cellElement.classList.add("cell");
 		cellElement.setAttribute("data-id", i + 1);
@@ -156,7 +157,7 @@ function setPoints(){
 		}
 	}
 	else if(selectedItem.width === 2 && selectedItem.height === 2){
-		let cellsArrayLength = gridCols * 3;
+		let cellsArrayLength = gridCols;
 		for(let i = 0; i < cellsArrayLength; i++){
 			if((i+1) % gridCols !== 0){
 				const point = {x: gridRectX + (gridCols - (i%gridCols) - 1 ) * squareSize, y: gridRectY + Math.floor(i/gridCols) * squareSize + squareSize};
@@ -467,12 +468,14 @@ function switchRays(el){
 		el.classList.add("show");
 
 		// activo todos los rayos a modo de ejemplo de manera chusquera
-		let consumableRect = grids.con.element.getBoundingClientRect();
-		let gridRectX = consumableRect.x;
-		let gridRectY = consumableRect.y;
+		let closestGrid = "bag";
+		let closestRect = grids[closestGrid].element.getBoundingClientRect();
+		let gridRectX = closestRect.x;
+		let gridRectY = closestRect.y;
 	
-		let gridCells = grids.con.cols * grids.con.rows;
-		let gridCols = grids.con.cols;
+
+		let gridCells = grids[closestGrid].cols * grids[closestGrid].rows;
+		let gridCols = grids[closestGrid].cols;
 
 		let elRect = el.getBoundingClientRect();
 
@@ -530,12 +533,12 @@ function makeItNeat(){
 		{ x: bagPos.x - centerX + squareSize * 3,	y: bagPos.y - centerY },					// D
 		{ x: bagPos.x - centerX,					y: bagPos.y - centerY + squareSize },		// Casco
 		{ x: bagPos.x - centerX + squareSize * 2,	y: bagPos.y - centerY + squareSize },		// Chancletas
-		{ x: bagPos.x - centerX,					y: bagPos.y - centerY + squareSize * 2 },	// Motosierra
-		{ x: bagPos.x - centerX + squareSize * 2,	y: bagPos.y - centerY + squareSize * 2 },	// Palo
+		{ x: bagPos.x - centerX + squareSize * 4,	y: bagPos.y - centerY },					// Motosierra
+		{ x: bagPos.x - centerX + squareSize * 6,	y: bagPos.y - centerY },					// Palo
 		{ x: resPos.x - centerX,					y: resPos.y - centerY },					// E
 		{ x: resPos.x - centerX + squareSize,		y: resPos.y - centerY },					// F
 		{ x: resPos.x - centerX,					y: resPos.y - centerY + squareSize },		// Recurso
-		{ x: resPos.x - centerX,					y: resPos.y - centerY + squareSize * 2},	// Recurso 2
+		{ x: resPos.x - centerX + squareSize * 2,	y: resPos.y - centerY },					// Recurso 2
 		{ x: conPos.x - centerX,					y: conPos.y - centerY },					// G
 		{ x: conPos.x - centerX + squareSize,		y: conPos.y - centerY },					// H
 		{ x: conPos.x - centerX + squareSize * 2,	y: conPos.y - centerY },					// Manzanas
