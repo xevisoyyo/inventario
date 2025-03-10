@@ -2,25 +2,27 @@ let selectedItem = {};
 const items = [];
 
 let selectedGrid = {};
-const bag = {
-	cols: 4,
-	rows: 4,
-	element: null,
-	rect: null,
+const grids = {
+	bag : {
+		cols: 4,
+		rows: 4,
+		element: null,
+		rect: null,
+	},
+	res : {
+		cols: 2,
+		rows: 4,
+		element: null,
+		rect: null,
+	},
+	con : {
+		cols: 4,
+		rows: 1,
+		element: null,
+		rect: null,
+	}
 };
 
-const res = {
-	cols: 2,
-	rows: 4,
-	element: null,
-	rect: null,
-}
-const con = {
-	cols: 4,
-	rows: 1,
-	element: null,
-	rect: null,
-}
 const points = [];
 
 const canvas = document.getElementById('lines-container');
@@ -290,11 +292,11 @@ function onItemDrop() {
 function getGrid(type){
 	switch(type){
 		case "bag":
-			return bag;
+			return grids.bag;
 		case "resources":
-			return res;
+			return grids.res;
 		case "consumables":
-			return con;
+			return grids.con;
 	}
 }
 function setActiveGrid(type){
@@ -464,12 +466,12 @@ function switchRays(el){
 		el.classList.add("show");
 
 		// activo todos los rayos a modo de ejemplo de manera chusquera
-		let consumableRect = con.element.getBoundingClientRect();
+		let consumableRect = grids.con.element.getBoundingClientRect();
 		let gridRectX = consumableRect.x;
 		let gridRectY = consumableRect.y;
 	
-		let gridCells = con.cols * con.rows;
-		let gridCols = con.cols;
+		let gridCells = grids.con.cols * grids.con.rows;
+		let gridCols = grids.con.cols;
 
 		let elRect = el.getBoundingClientRect();
 
