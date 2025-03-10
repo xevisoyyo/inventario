@@ -75,6 +75,7 @@ function createGrid(type, nomberOfCells) {
 		cellElement.classList.add("cell");
 		cellElement.setAttribute("data-id", i + 1);
 		grid.element.appendChild(cellElement);
+		grid.rect = grid.element.getBoundingClientRect();
 	}
 }
 function createItem({name, width, height, type, x, y}) {
@@ -86,7 +87,7 @@ function createItem({name, width, height, type, x, y}) {
 		height,
 		type,
 		element: document.createElement("div"),
-		rect: null,
+		rect: {x: 0, y: 0},
 	};
 	// crea el item (elemento) ^
 	item.element.classList.add("item", `item-${item.width}x${item.height}`);
@@ -514,23 +515,32 @@ function makeAMess(){
 	makeTheOrder(positions);
 }
 function makeItNeat(){
+
+	const bagPos = {x: grids.bag.rect.x, y: grids.bag.rect.y};
+	const conPos = {x: grids.con.rect.x, y: grids.con.rect.y};
+	const resPos = {x: grids.res.rect.x, y: grids.res.rect.y};
+
+	const centerX = window.innerWidth * .5 - 1; // -1 para descontar el borde de la celda
+	const centerY = window.innerHeight * .5 - 1;
+
 	const positions = [
-		{ x: -161,	y: -136 },	// A
-		{ x: -111,	y: -136 },	// B
-		{ x: -61,	y: -136 },	// C
-		{ x: -11,	y: -136 },	// D
-		{ x: -161,	y: -86  },	// Casco
-		{ x: -61,	y: -86  },	// Chancletas
-		{ x: -161,	y: -36  },	// Motosierra
-		{ x: -61,	y: -36  },	// Palo
-		{ x: 61,	y: -136 },	// E
-		{ x: 111,	y: -136 },	// F
-		{ x: 61,	y: -86  },	// Recurso
-		{ x: 61,	y: -36  },	// Recurso 2
-		{ x: -100,	y: 123 },	// G
-		{ x: -50,	y: 123 },	// H
-		{ x: 0,		y: 123 },	// Manzanas
+		{ x: bagPos.x - centerX,					y: bagPos.y - centerY },					// A
+		{ x: bagPos.x - centerX + squareSize,		y: bagPos.y - centerY },					// B
+		{ x: bagPos.x - centerX + squareSize * 2,	y: bagPos.y - centerY },					// C
+		{ x: bagPos.x - centerX + squareSize * 3,	y: bagPos.y - centerY },					// D
+		{ x: bagPos.x - centerX,					y: bagPos.y - centerY + squareSize },		// Casco
+		{ x: bagPos.x - centerX + squareSize * 2,	y: bagPos.y - centerY + squareSize },		// Chancletas
+		{ x: bagPos.x - centerX,					y: bagPos.y - centerY + squareSize * 2 },	// Motosierra
+		{ x: bagPos.x - centerX + squareSize * 2,	y: bagPos.y - centerY + squareSize * 2 },	// Palo
+		{ x: resPos.x - centerX,					y: resPos.y - centerY },					// E
+		{ x: resPos.x - centerX + squareSize,		y: resPos.y - centerY },					// F
+		{ x: resPos.x - centerX,					y: resPos.y - centerY + squareSize },		// Recurso
+		{ x: resPos.x - centerX,					y: resPos.y - centerY + squareSize * 2},	// Recurso 2
+		{ x: conPos.x - centerX,					y: conPos.y - centerY },					// G
+		{ x: conPos.x - centerX + squareSize,		y: conPos.y - centerY },					// H
+		{ x: conPos.x - centerX + squareSize * 2,	y: conPos.y - centerY },					// Manzanas
 	]
+
 	makeTheOrder(positions);
 }
 function makeTheOrder(positions){
