@@ -50,6 +50,11 @@ div{
   gap: 20px;
 	box-shadow: none;
 }
+.inventory-bottom {
+  display: flex;
+  gap: 20px;
+	box-shadow: none;
+}
 .container {
   display: flex;
   flex-direction: column;
