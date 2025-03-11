@@ -157,7 +157,7 @@ function setPoints(){
 		}
 	}
 	else if(selectedItem.width === 2 && selectedItem.height === 2){
-		let cellsArrayLength = gridCols;
+		let cellsArrayLength = gridCols * (selectedGrid.rows - 1);
 		for(let i = 0; i < cellsArrayLength; i++){
 			if((i+1) % gridCols !== 0){
 				const point = {x: gridRectX + (gridCols - (i%gridCols) - 1 ) * squareSize, y: gridRectY + Math.floor(i/gridCols) * squareSize + squareSize};
