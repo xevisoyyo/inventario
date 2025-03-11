@@ -88,7 +88,7 @@ function createItem({name, width, height, type, x, y}) {
 		height,
 		type,
 		element: document.createElement("div"),
-		rect: {x: 0, y: 0},
+		rect: null,
 	};
 	// crea el item (elemento) ^
 	item.element.classList.add("item", `item-${item.width}x${item.height}`);
