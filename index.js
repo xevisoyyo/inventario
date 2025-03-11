@@ -498,23 +498,38 @@ function switchRays(el){
 	}
 }
 function makeAMess(){
-	const positions = [
-		{ x: 320,	y: -220 },	// A
-		{ x: 192,	y: -310 },	// B
-		{ x: -192,	y: 222 },	// C
-		{ x: 380,	y: -32 },	// D
-		{ x: -312,	y: 32  },	// Casco
-		{ x: -332,	y: -142  },	// Chancletas
-		{ x: 192,	y: 192  },	// Motosierra
-		{ x: -82,	y: -322  },	// Palo
-		{ x: -362,	y: 122 },	// E
-		{ x: -292,	y: -292 },	// F
-		{ x: -392,	y: -62  },	// Recurso
-		{ x: 222,	y: -132  },	// Recurso 2
-		{ x: 282,	y: 112 },	// G
-		{ x: -422,	y: -292 },	// H
-		{ x: -310,	y: 252 },	// Manzanas
-	]
+	const inventoryRect = document.getElementById("inventory").getBoundingClientRect();
+	const positions = [];
+	items.forEach( () => {
+		let x;
+		let y;
+		const margin = 10;
+		const maxItemSize = 100;
+		const extraDistance = maxItemSize * 1.5;
+		const inventoryHalfWidth = inventoryRect.width * .5 + margin;
+		const inventoryHalfHeight = inventoryRect.height * .5 + margin;
+		const zone = Math.floor(Math.random() * 4);
+
+		switch(zone){
+			case 0: // arriba
+				x = getRandom(- inventoryHalfWidth - extraDistance, inventoryHalfWidth + maxItemSize);
+				y = getRandom(- inventoryHalfHeight - maxItemSize, - inventoryHalfHeight - extraDistance);
+				break;
+			case 1: // derecha
+				x = getRandom(inventoryHalfWidth, inventoryHalfWidth + extraDistance);
+				y = getRandom(- inventoryHalfHeight - maxItemSize, inventoryHalfHeight + maxItemSize);
+				break;
+			case 2: // abajo
+				x = getRandom(- inventoryHalfWidth - extraDistance, inventoryHalfWidth + maxItemSize);
+				y = getRandom(inventoryHalfHeight, inventoryHalfHeight + maxItemSize * 0.1);
+				break;
+			case 3: // izquierda
+				x = getRandom(- inventoryHalfWidth - maxItemSize, - inventoryHalfWidth - extraDistance);
+				y = getRandom(- inventoryHalfHeight - maxItemSize, inventoryHalfHeight + maxItemSize);
+				break;
+		}
+		positions.push({x, y});
+	});
 	makeTheOrder(positions);
 }
 function makeItNeat(){
