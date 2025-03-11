@@ -4,7 +4,7 @@ const items = [];
 let selectedGrid = {};
 const grids = {
 	bag : {
-		cols: 8,
+		cols: 8, // las columnas y las filas hay que cambiaras en el css también
 		rows: 2,
 		element: null,
 		rect: null,
@@ -418,21 +418,21 @@ function makeAGreeting(){
 }
 function makeARobot(){
 	const positions = [
-		{ x: 192,	y: -370 },	// A
-		{ x: 192,	y: -310 },	// B
-		{ x: 192,	y: -250 },	// C
-		{ x: 192,	y: -190 },	// D
-		{ x: 192,	y: -130 },	// Casco
-		{ x: 192,	y: -130 },	// Chancletas
-		{ x: 192,	y: -70  },	// Motosierra
-		{ x: 192,	y: -70  },	// Palo
-		{ x: -242,	y: -370 },	// E
-		{ x: -242,	y: -310 },	// F
-		{ x: -292,	y: -130 },	// Recurso
-		{ x: -292,	y: -70  },	// Recurso 2
-		{ x: -242,	y: -250 },	// G
-		{ x: -242,	y: -190 },	// H
-		{ x: -292,	y: -130 },	// Manzanas
+		{ x: 242,	y: -370 },	// A
+		{ x: 242,	y: -310 },	// B
+		{ x: 242,	y: -250 },	// C
+		{ x: 242,	y: -190 },	// D
+		{ x: 242,	y: -130 },	// Casco
+		{ x: 242,	y: -130 },	// Chancletas
+		{ x: 242,	y: -70  },	// Motosierra
+		{ x: 242,	y: -70  },	// Palo
+		{ x: -292,	y: -370 },	// E
+		{ x: -292,	y: -310 },	// F
+		{ x: -342,	y: -130 },	// Recurso
+		{ x: -342,	y: -70  },	// Recurso 2
+		{ x: -292,	y: -250 },	// G
+		{ x: -292,	y: -190 },	// H
+		{ x: -342,	y: -130 },	// Manzanas
 	]
 	makeTheOrder(positions);
 }
